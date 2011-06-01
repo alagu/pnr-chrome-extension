@@ -40,7 +40,9 @@ PNRStatus.callback = function(data)
         htmlcontent += ' <div class="traindetail">';
         htmlcontent += ' <table border=1 style="border-bottom:0;"><tr>';
         htmlcontent += ' <td width="20%"><div class="pnrnum"><span class="pnr">PNR</span> ' + return_obj.data.pnr_number + '</div></td>';
-        htmlcontent += ' <td width="80%"><div class="traininfo">' + return_obj.data.train_number + ' ' + return_obj.data.train_name + ' (' + return_obj.data.from + ' to ' + return_obj.data.to +  ')</div></td>';
+        htmlcontent += ' <td width="80%">';
+        htmlcontent += '<div class="pnr-edit-box" id="'+  return_obj.data.pnr_number +'"><input type="button" class="delete_btn" value="x"></div>';
+        htmlcontent += '<div class="traininfo">' + return_obj.data.train_number + ' ' + return_obj.data.train_name + ' (' + return_obj.data.from + ' to ' + return_obj.data.to +  ')</div></td>';
         htmlcontent += ' </tr></table>';
         htmlcontent += ' </div>';
         htmlcontent += ' <div class="ticketdetail">';
@@ -68,6 +70,8 @@ PNRStatus.callback = function(data)
     k.append(newNode);
     $('#edit_trigger').show();
   }
+  PNRStatus.setDisplays();
+  PNRStatus.updateListeners();
 }
 
 PNRStatus.getPNRStatus = function(pnrInteger)
@@ -82,7 +86,19 @@ PNRStatus.getPNRStatus = function(pnrInteger)
 
 PNRStatus.init = function(){
   PNRStatus.fetchAll();
+  PNRStatus.setDisplays();
 
+  $('#add_pnr').click(PNRStatus.addPNR);
+  $('#edit_pnr').click(PNRStatus.editPNR);
+}
+
+PNRStatus.updateListeners = function()
+{
+  $('.pnr-edit-box input').click(PNRStatus.deletePNR);
+}
+
+PNRStatus.setDisplays = function()
+{
   if(PNRStatus.pnrnum.length == 0)
   {
     $('#edit_block').show();
@@ -91,10 +107,8 @@ PNRStatus.init = function(){
   else
   {
     $('#edit_block').hide();
+    $('.pnr-edit-box').hide();
   }
-
-  $('#add_pnr').click(PNRStatus.addPNR);
-  $('#edit_pnr').click(PNRStatus.editPNR);
 }
 
 PNRStatus.editPNR = function(ev)
@@ -102,10 +116,27 @@ PNRStatus.editPNR = function(ev)
   if($('#edit_block').is(':visible'))
   {
     $('#edit_block').hide();
+    $('.pnr-edit-box').hide();
   }
   else
   {
     $('#edit_block').show();
+    $('.pnr-edit-box').show();
+  }
+}
+
+PNRStatus.deletePNR = function(ev)
+{
+  PNRStatus.deleteFromLocalStorage(this.parentNode.id);
+  PNRStatus.fetchAll();
+}
+
+PNRStatus.deleteFromLocalStorage = function(num)
+{
+  if(num){
+    PNRStatus.populatePNR();
+    PNRStatus.pnrnum.splice(PNRStatus.pnrnum.indexOf(num));
+    localStorage['pnrnum'] = PNRStatus.pnrnum.join(',');
   }
 }
 
@@ -131,6 +162,7 @@ PNRStatus.addPNR = function(ev)
  localStorage['pnrnum'] = pnrnum.join(',');
 
  $('#edit_block').hide();
+ $('#pnr_input').val('');
  PNRStatus.fetchAll();
 }
 
@@ -139,7 +171,7 @@ PNRStatus.pnrnum = [];
 PNRStatus.populatePNR = function()
 {
   var pnrString = localStorage['pnrnum'];
-  if(pnrString.length == 0)
+  if(!pnrString || pnrString.length == 0)
   {
     PNRStatus.pnrnum = [];
   }
@@ -157,6 +189,11 @@ PNRStatus.fetchAll = function()
   if(PNRStatus.pnrnum.length > 0)
   {
     $('#parentDiv').html('Fetching..');
+  }
+  else
+  {
+    $('#parentDiv').html('');
+    PNRStatus.setDisplays();
   }
   for(var i=0;i<PNRStatus.pnrnum.length;i++)
   {
