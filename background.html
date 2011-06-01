@@ -1,0 +1,19 @@
+<script src="http://code.jquery.com/jquery-1.4.2.js"></script>
+<script>
+  function onRequest(request, sender, callback) {
+    if (request.action == 'getJSON') {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", request.url, true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+          var resp = xhr.responseText;
+          callback(resp);
+        }
+      }
+      xhr.send();
+
+    }
+
+  }
+    chrome.extension.onRequest.addListener(onRequest);
+</script>

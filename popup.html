@@ -1,0 +1,48 @@
+<script src="http://code.jquery.com/jquery-1.4.2.js"></script>
+<style>
+#parentDiv {
+width:400px;
+padding-top:30px;
+}
+
+#parentDiv .pnr {
+  font-size:30%;
+}
+
+#parentDiv .statusitem {
+  margin-bottom:2px;
+}
+
+#parentDiv .traininfo {
+  font-size:80%;
+  text-align:center;
+}
+
+#parentDiv .passengerstatus {
+  text-align:center;
+}
+
+#edit_pnr {
+  border:1px solid #000;
+}
+
+table {
+  border-collapse:collapse;
+}
+
+#edit_trigger {
+  float:right;
+}
+
+</style>
+<div id="edit_trigger">
+<input type="button" value="Edit" id="edit_pnr">
+</div>
+<div id="edit_block">
+  <div id="add_pnr_block">
+    <label for="pnr_input">Enter PNR:</label><input type="text" id="pnr_input"><input type="button" value="Add" id="add_pnr">
+  </div>
+</div>
+<div id="parentDiv">
+</div>
+<script src="user.js"></script>
