@@ -127,15 +127,21 @@ PNRStatus.editPNR = function(ev)
 
 PNRStatus.deletePNR = function(ev)
 {
-  PNRStatus.deleteFromLocalStorage(this.parentNode.id);
-  PNRStatus.fetchAll();
+  if(PNRStatus.pnrnum.indexOf(this.parentNode.id) >= 0)
+  {
+    PNRStatus.deleteFromLocalStorage(this.parentNode.id);
+    PNRStatus.fetchAll();
+  }
 }
 
 PNRStatus.deleteFromLocalStorage = function(num)
 {
   if(num){
     PNRStatus.populatePNR();
-    PNRStatus.pnrnum.splice(PNRStatus.pnrnum.indexOf(num));
+    if(PNRStatus.pnrnum.indexOf(num) != -1)
+    {
+      PNRStatus.pnrnum.splice(PNRStatus.pnrnum.indexOf(num),1);
+    }
     localStorage['pnrnum'] = PNRStatus.pnrnum.join(',');
   }
 }
