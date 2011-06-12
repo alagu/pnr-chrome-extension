@@ -15,7 +15,7 @@ var applyAddPNRButtons = function(node)
 
 var storePNRResponse = function(pnr_number)
 {
-    var k = $('<div class="pnr_message" style="display:none;">PNR Number <strong>' + pnr_number  +'</strong> added to your PNR Watchlist (Click <img src="http://pnrapi.appspot.com/static/pnr.png"> icon to know the status).</div>');
+    var k = $('<div class="pnr_message" style="display:none;">PNR Number <strong>' + pnr_number  +'</strong> was added to your PNR Watchlist (Click <img src="http://pnrapi.appspot.com/static/pnr.png"> icon to know the status).</div>');
     k.insertBefore('#maincontentbody');
     $('.pnr_message').css('background', '#EFFEB9 url(http://pnrapi.appspot.com/static/green_check.png) no-repeat 10px 2px');
     $('.pnr_message').css('border', '1px solid #97C700');
