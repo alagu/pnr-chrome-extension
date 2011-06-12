@@ -1,10 +1,11 @@
 {
   "name": "PNR Status Enquiry",
-  "version": "0.2",
+  "version": "0.3",
   "description": "PNR Status for your tickets",
   "background_page": "background.html",
   "permissions": [
-    "http://pnrapi.appspot.com/"
+    "http://pnrapi.appspot.com/",
+    "notifications"
   ],
    "icons": {
      "48": "icon.png"
@@ -12,5 +13,12 @@
    "browser_action": {
     "default_icon": "icon.png",
     "popup": "popup.html"
-  }
+  },
+   "background_page" : "background.html",
+   "content_scripts": [
+   {
+     "matches": ["https://www.irctc.co.in/*"],
+     "js" : ["jquery.js","contentscript.js"]
+   }
+  ]
 }
