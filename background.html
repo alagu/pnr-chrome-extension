@@ -11,7 +11,23 @@
         }
       }
       xhr.send();
+    }
+    else if ( request.action == 'storePNR')
+    {
+       var pnrnum = localStorage['pnrnum']; 
 
+       pnrnum = pnrnum ? pnrnum.split(',') : [];
+
+       var num = request.pnr_num_store + '';
+
+       if(num.length == 10 && pnrnum.indexOf(num) == -1)
+       {
+         pnrnum.push(num);
+       }
+
+       localStorage['pnrnum'] = pnrnum.join(',');
+       
+       callback(num);
     }
 
   }
