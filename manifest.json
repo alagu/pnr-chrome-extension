@@ -1,7 +1,7 @@
 {
-  "name": "PNR Status Enquiry",
+  "name": "PNR Status Watchlist",
   "version": "0.3",
-  "description": "PNR Status for your tickets",
+  "description": "PNR Status watchlist for your tickets",
   "background_page": "background.html",
   "permissions": [
     "http://pnrapi.appspot.com/",
