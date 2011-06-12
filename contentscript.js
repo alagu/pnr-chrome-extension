@@ -15,7 +15,7 @@ var applyAddPNRButtons = function(node)
 
 var storePNRResponse = function(pnr_number)
 {
-    var k = $('<div class="pnr_message" style="display:none;">PNR Number <strong>' + pnrNumber +'</strong> added to your PNR Watchlist (Click <img src="http://pnrapi.appspot.com/static/pnr.png"> icon to know the status).</div>');
+    var k = $('<div class="pnr_message" style="display:none;">PNR Number <strong>' + pnr_number  +'</strong> added to your PNR Watchlist (Click <img src="http://pnrapi.appspot.com/static/pnr.png"> icon to know the status).</div>');
     k.insertBefore('#maincontentbody');
     $('.pnr_message').css('background', '#EFFEB9 url(http://pnrapi.appspot.com/static/green_check.png) no-repeat 10px 2px');
     $('.pnr_message').css('border', '1px solid #97C700');
@@ -25,7 +25,7 @@ var storePNRResponse = function(pnr_number)
     $('.pnr_message').css('padding', '4px 2px 5px 2px');
     $('.pnr_message img').css('vertical-align', 'middle');
 
-    if(k) { k.show();}
+    if(k) { k.show('slow');}
 }
 
 var addToPNRCallback = function(e)
@@ -46,15 +46,6 @@ var addToPNRCallback = function(e)
 
 var addToPNRButton = function()
 {
-/*
-  var notification = webkitNotifications.createNotification(
-      null,
-      'PNR Status Extension',
-      'Time to make the toast.'
-    );
-    notification.show();*/
-
-
    var tdNodes = $('td.borderB');
    for(var i =0;i<tdNodes.length;i++)
    {
@@ -65,6 +56,17 @@ var addToPNRButton = function()
     }
    }
 
+
+   var thNodes = $('td.boder-lft');
+
+   for(var i=0;i<thNodes.length;i++)
+   {
+     var thValue = $(thNodes[i]).html();
+     if(thValue.indexOf('PNR Number') != -1)
+     {
+       $(thNodes[i]).attr('width','18%');
+     }
+   }
 
    $('img.add_to_pnr').css('cursor','pointer');
    $('img.add_to_pnr').click(addToPNRCallback);
@@ -81,7 +83,6 @@ var init = function(){
   {
     if(location.indexOf(searchItem) != -1)
     {
-      console.log(searchItem + ' matched');
       search_map[searchItem]();
     }
   }
