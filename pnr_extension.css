@@ -1,0 +1,71 @@
+.pnr_response {    
+    background:#EFFEB9 url(https://pnrapi.appspot.com/static/green_check.png) no-repeat 10px 2px;
+    border:1px solid #97C700;
+    width:80%;
+    font-size:15px;
+    margin:10px auto;
+    padding:4px 2px 5px 2px;
+}
+
+.pnr_response img,
+.pnr_addmessage img{
+  vertical-align:middle;
+}
+
+
+.pnr_addmessage {
+    background:#FEEAC9;
+    border:1px solid #D38E49;
+    width:80%;
+    font-size:15px;
+    clear:both;
+    margin:10px auto;
+    padding:4px 2px 5px 2px;
+}
+
+
+#parentDiv {
+width:400px;
+padding-top:30px;
+}
+
+#parentDiv .pnr {
+  font-size:30%;
+}
+
+#parentDiv .statusitem {
+  margin-bottom:2px;
+}
+
+#parentDiv .traininfo {
+  font-size:80%;
+  text-align:center;
+}
+
+#parentDiv .passengerstatus {
+  text-align:center;
+}
+
+#edit_pnr {
+  border:1px solid #000;
+}
+
+table {
+  border-collapse:collapse;
+}
+
+#edit_trigger {
+  float:right;
+}
+
+.pnr-edit-box {
+  float:right;
+}
+
+.pnr-edit-box input {
+  border:1px solid #000;
+  color:#fff;
+  background-color:#f00;
+  -webkit-border-radius: 10px;
+}
+
