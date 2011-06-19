@@ -208,6 +208,6 @@ PNRStatus.fetchAll = function()
 
 }
 
-PNRStatus.init();
+//PNRStatus.init();
 
 })();

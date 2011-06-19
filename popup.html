@@ -1,13 +1,103 @@
-<script src="http://code.jquery.com/jquery-1.4.2.js"></script>
-<link type="text/css" rel="stylesheet" href="http://pnrapi.appspot.com/static/pnr_extension.css">
-<div id="edit_trigger">
-<input type="button" value="Edit" id="edit_pnr">
+<html>
+<head>
+    <script src="jquery.js"></script>
+    <link type="text/css" rel="stylesheet" href="pnr_extension.css">
+    <title>PNR Status Watchlist</title>
+</head>
+<body>
+<div id="modify-block">
+    <div id="edit-block">
+    <button id="edit">Edit</button>
+    </div>
+    <div id="add-block">
+    <button id="add">Add</button>
+    </div>
+    
+    <div id="add-pnr-input">
+        <div class="input-wrap">
+            <label>Enter PNR</label><input type="text" id="pnr-input">
+        </div>
+        <input type="submit" value="Add" id="add-action">
+    </div>
 </div>
-<div id="edit_block">
-  <div id="add_pnr_block">
-    <label for="pnr_input">Enter PNR:</label><input type="text" id="pnr_input"><input type="button" value="Add" id="add_pnr">
-  </div>
-</div>
-<div id="parentDiv">
+
+<div id="results-block">
+    <div class="train-block" id="train-num-123456">
+        <div class="train-info">
+            16232 MYSORE-MAILADUTHURAI EXPRESS
+        </div>
+        <div class="pnr-items">
+            <div class="pnr-item" id="pnr-num-123456">
+                <div class="delete-button">
+                    <button>Delete</button>
+                </div>
+                <div class="travel-date" >
+                    <div class="travel-date-date">16</div>
+                    <div class="travel-date-month">Jun</div>
+                </div>
+                <div class="travel-tickets">
+                    <div class="travel-ticket-item waitlist">
+                        W/L 35
+                    </div>
+                    <div class="travel-ticket-item rac">
+                        RAC 56
+                    </div>
+                    <div class="travel-ticket-item cnf">
+                        CNF S2 8
+                    </div>
+                    
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+            <div class="pnr-item" id="pnr-num-123456">
+                <div class="delete-button">
+                    <button>Delete</button>
+                </div>
+                <div class="travel-date" >
+                    <div class="travel-date-date">16</div>
+                    <div class="travel-date-month">Jun</div>
+                </div>
+                <div class="travel-tickets">
+                    <div class="travel-ticket-item waitlist">
+                        W/L 35
+                    </div>
+                    <div class="travel-ticket-item rac">
+                        RAC 56
+                    </div>
+                    <div class="travel-ticket-item cnf">
+                        CNF S2 8
+                    </div>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+            <div class="pnr-item pnr-item-last" id="pnr-num-123456">
+                <div class="delete-button">
+                    <button>Delete</button>
+                </div>
+                <div class="travel-date" >
+                    <div class="travel-date-date">16</div>
+                    <div class="travel-date-month">Jun</div>
+                </div>
+                <div class="travel-tickets" style="display:none">
+                    <div class="travel-ticket-item waitlist">
+                        W/L 35
+                    </div>
+                    <div class="travel-ticket-item rac">
+                        RAC 56
+                    </div>
+                    <div class="travel-ticket-item cnf">
+                        CNF S2 8
+                    </div>
+                </div>
+                <div class="travel-pnr-number">
+                    <span class="pnr-label">PNR</span><span class="pnr-number-value">454585849494</span>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+            
+         </div>
+    </div>
 </div>
 <script src="user.js"></script>
+</body>
+</html>

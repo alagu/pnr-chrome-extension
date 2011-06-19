@@ -1,71 +1,233 @@
-.pnr_response {    
-    background:#EFFEB9 url(https://pnrapi.appspot.com/static/green_check.png) no-repeat 10px 2px;
-    border:1px solid #97C700;
-    width:80%;
-    font-size:15px;
-    margin:10px auto;
-    padding:4px 2px 5px 2px;
+/* New CSS */
+/*
+
+Dark blue - #6688EE
+Baby blue - #E3E9FF 
+Green background - #BFE894
+Green shadow - #6CBE1C
+Orange - #E8B36D
+Orange shadow - #CE9654
+Red - #FF8A94
+Red shadow - #CC6E76
+
+*/
+
+ul, li
+{
+	margin:0;
+	padding:0;
 }
 
-.pnr_response img,
-.pnr_addmessage img{
-  vertical-align:middle;
+ul
+{
+ list-style:none;	
 }
 
 
-.pnr_addmessage {
-    background:#FEEAC9;
-    border:1px solid #D38E49;
-    width:80%;
-    font-size:15px;
-    clear:both;
-    margin:10px auto;
-    padding:4px 2px 5px 2px;
+#modify-block #edit-block
+{
+	float:right;
+}
+
+#modify-block #add-block
+{
+	float:left;
+}
+
+#modify-block #add-pnr-input
+{
+	clear:both;
+}
+
+#modify-block #add-pnr-input .input-wrap
+{
+	background-color:#fff;
+	width:400px;
+	-webkit-border-radius: 4px;
+	border:1px solid #6688EE;
+	display:inline-block;
+	margin:8px 0 8px 20px;
+	padding:0 0 3px 3px;
+}
+
+#modify-block #add-pnr-input label
+{
+	font-size:130%;
+	background-color:#6688EE;
+	color:#fff;
+	border:1px solid #000;
+	-webkit-border-radius: 4px;
+	margin:0 2px 2px 0;
+	padding:3px;
+}
+
+#modify-block #add-pnr-input #pnr-input
+{
+	padding:2px;
+	font-size:150%;
+	border:0 none;
+}
+
+#modify-block #add-pnr-input #add-action
+{
+	font-size:120%;
+	color:#fff;
+	border:1px solid #000;
+	background-color:#6688EE;
+	-webkit-border-radius: 4px;
+}
+
+#modify-block
+{
+	border:1px solid #000;
+	-webkit-border-radius: 4px;	
+	background-color:#E3E9FF;
+	
+}
+
+#modify-block #edit,
+#modify-block #add
+
+{
+	color:#fff;
+	border:1px solid #000;
+	background-color:#6688EE;
+	-webkit-border-radius: 4px;
+}
+
+.train-block
+{
+	width:499px;
+	margin-top:10px;	
+}
+
+.train-block .train-info
+{
+	padding:10px;
+	background-color:#E3E9FF;
+	color:black;
+	border-top:1px solid #000;
+	border-left:1px solid #000;
+	border-right:1px solid #000;
+	font-weight:bold;
+  
+	
+	-webkit-border-top-left-radius: 4px;
+	-webkit-border-top-right-radius: 4px;
+}
+
+.train-block .pnr-items 
+{
+	border-bottom:1px solid #000;
+	border-left:1px solid #000;
+	border-right:1px solid #000;
+}
+
+.train-block .pnr-items .pnr-item
+{
+	border-bottom:1px solid #000;
+}
+
+.train-block .pnr-items .pnr-item-last
+{
+ 	border-bottom:0 none;
+}
+
+.train-block .pnr-item .travel-date
+{
+	float:left;
+	height:60px;
+	width:35px;
+	padding:10px;
+	/*background-color:#F4F6FC;*/
+	background-color:#E3E9FF;
+}
+
+.train-block .travel-date .travel-date-date,
+.train-block .travel-date .travel-date-month
+{
+	text-align:center;
+	font-size:110%;
+}
+
+.train-block .travel-tickets
+{
+  margin-left:58px;
+}
+
+.train-block .travel-ticket-item
+{
+	margin-top:3px;
+	margin-bottom:7px;
+	margin-left:3px;
+	height:50px;
+	display:inline-block;
+	padding:10px;
+	-webkit-border-radius: 4px;	
 }
 
 
-#parentDiv {
-width:400px;
-padding-top:30px;
+.train-block .rac
+{
+	background-color:#FFAA33;
+	-webkit-box-shadow:2px 2px 2px #CC7700;
 }
 
-#parentDiv .pnr {
-  font-size:30%;
+.train-block .cnf
+{
+	background-color: #BFE894;
+	-webkit-box-shadow:2px 2px 2px #6CBE1C;
 }
 
-#parentDiv .statusitem {
-  margin-bottom:2px;
+.train-block .waitlist
+{
+	background-color:#FF8A94;
+	-webkit-box-shadow:2px 2px 2px #CC6E76;
 }
 
-#parentDiv .traininfo {
-  font-size:80%;
-  text-align:center;
+
+.train-block .travel-date .travel-date-date
+{
+	margin-top:10px;
+} 
+
+.train-block .delete-button
+{
+	float:right;
+	margin-top:20px;
 }
 
-#parentDiv .passengerstatus {
-  text-align:center;
+.train-block .delete-button button
+{
+	-webkit-border-radius: 3px;	
+	border:1px solid #000;
+	color:white;
+	background-color:red;
+	margin-right:10px;
 }
 
-#edit_pnr {
-  border:1px solid #000;
+.train-block .travel-pnr-number
+{
+	margin-left:55px;
+	padding:10px 10px;
+	padding-top:20px;
 }
 
-table {
-  border-collapse:collapse;
+.travel-pnr-number .pnr-label
+{
+	font-size:80%;
+	margin-left:40px;
+	margin-top:13px;
+	float:left;
 }
 
-#edit_trigger {
-  float:right;
+.travel-pnr-number .pnr-number-value
+{
+	font-size:200%;
+	margin-left:10px;
 }
 
-.pnr-edit-box {
-  float:right;
+body
+{
+	width:500px;
 }
-
-.pnr-edit-box input {
-  border:1px solid #000;
-  color:#fff;
-  background-color:#f00;
-  -webkit-border-radius: 10px;
-}
-
