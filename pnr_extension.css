@@ -82,11 +82,10 @@ ul
 	border:1px solid #000;
 	-webkit-border-radius: 4px;	
 	background-color:#E3E9FF;
-	
 }
 
-#modify-block #edit,
-#modify-block #add
+#modify-block #edit-toggle,
+#modify-block #add-toggle
 
 {
 	color:#fff;

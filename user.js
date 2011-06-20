@@ -85,11 +85,12 @@ PNRStatus.getPNRStatus = function(pnrInteger)
 }
 
 PNRStatus.init = function(){
-  PNRStatus.fetchAll();
+  //PNRStatus.fetchAll();
   PNRStatus.setDisplays();
 
   $('#add_pnr').click(PNRStatus.addPNR);
-  $('#edit_pnr').click(PNRStatus.editPNR);
+  $('#add-toggle').click(PNRStatus.toggleEdit);
+  $('#edit-toggle').click(PNRStatus.toggleEdit);
 }
 
 PNRStatus.updateListeners = function()
@@ -99,29 +100,34 @@ PNRStatus.updateListeners = function()
 
 PNRStatus.setDisplays = function()
 {
+	$('#add-pnr-input').hide();
+	$('.travel-pnr-number').hide();
+	$('.delete-button').hide();
+	$('.travel-tickets').show();
   if(PNRStatus.pnrnum.length == 0)
   {
-    $('#edit_block').show();
-    $('#edit_trigger').hide();
-  }
-  else
-  {
-    $('#edit_block').hide();
-    $('.pnr-edit-box').hide();
+    $('#add-pnr-input').show();
+	$('#add-toggle').html('-');
   }
 }
 
-PNRStatus.editPNR = function(ev)
+PNRStatus.toggleEdit = function(ev)
 {
-  if($('#edit_block').is(':visible'))
+  if($('#add-pnr-input').is(':visible'))
   {
-    $('#edit_block').hide();
-    $('.pnr-edit-box').hide();
+	$('#add-pnr-input').hide('slow');
+	$('.travel-pnr-number').hide();
+	$('.delete-button').hide();
+	$('.travel-tickets').show();
+	$('#add-toggle').html('Add');
   }
   else
   {
-    $('#edit_block').show();
-    $('.pnr-edit-box').show();
+	$('#add-pnr-input').show('slow');
+	$('.travel-pnr-number').show();
+	$('.delete-button').show();
+	$('.travel-tickets').hide();
+	$('#add-toggle').html('-');
   }
 }
 
@@ -208,6 +214,6 @@ PNRStatus.fetchAll = function()
 
 }
 
-//PNRStatus.init();
+PNRStatus.init();
 
 })();
