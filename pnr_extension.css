@@ -82,6 +82,7 @@ ul
 	border:1px solid #000;
 	-webkit-border-radius: 4px;	
 	background-color:#E3E9FF;
+	width:497px;
 }
 
 #modify-block #edit-toggle,
@@ -91,6 +92,18 @@ ul
 	color:#fff;
 	border:1px solid #000;
 	background-color:#6688EE;
+	-webkit-border-radius: 4px;
+}
+
+#notif-message
+{
+	display:none;
+	margin:10px 0;
+	padding:10px;
+	text-align:center;
+	color:#000;
+	border:1px solid #000;
+	background-color:#E3E9FF;
 	-webkit-border-radius: 4px;
 }
 
@@ -113,6 +126,11 @@ ul
 	
 	-webkit-border-top-left-radius: 4px;
 	-webkit-border-top-right-radius: 4px;
+}
+
+.test-item 
+{
+	display:none;
 }
 
 .train-block .pnr-items 
