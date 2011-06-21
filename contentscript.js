@@ -75,6 +75,9 @@ var addToPNRButton = function()
 
 
 var search_map = {'repassword':addToPNRButton};
+/*
+ After booking ticket -page https://www.irctc.co.in/cgi-bin/bv60.dll/irctc/booking/bankresponse.do
+ */
 
 var init = function(){
   var location = window.location + '';
