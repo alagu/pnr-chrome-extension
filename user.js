@@ -124,6 +124,8 @@ PNRStatus.callback = function(data)
     
     	var newNode = $(htmlcontent);
     	$('#train-num-' + trainnum + ' .pnr-items').append(newNode);
+		$('#parent-wrap').height(20);
+
   }
 
   PNRStatus.hideLoading();
@@ -163,6 +165,7 @@ PNRStatus.init = function(){
   $('#add-action').click(PNRStatus.addPNR);
   $('#add-toggle').click(PNRStatus.toggleEdit);
   $('#edit-toggle').click(PNRStatus.toggleEdit);
+  $('#parent-wrap').height(20);
 }
 
 PNRStatus.updateListeners = function()
@@ -206,9 +209,11 @@ PNRStatus.toggleEdit = function(ev)
 PNRStatus.deletePNR = function(ev)
 {
   
-  if(PNRStatus.pnrnum.indexOf(this.parentNode.id) >= 0)
+  var nodeid = this.parentNode.parentNode.id;
+  var pnrnum = nodeid.split('pnr-num-')[1];
+  if(PNRStatus.pnrnum.indexOf(pnrnum) >= 0)
   {
-    PNRStatus.deleteFromLocalStorage(this.parentNode.id);
+    PNRStatus.deleteFromLocalStorage(pnrnum);
     PNRStatus.fetchAll();
   }
 }
@@ -266,6 +271,8 @@ PNRStatus.fetchAll = function()
   if(PNRStatus.pnrnum.length > 0)
   { 
 	PNRStatus.showLoading();
+	$('#results-block').html('');
+  	$('#parent-wrap').height(20);
   }
 
   for(var i=0;i<PNRStatus.pnrnum.length;i++)
