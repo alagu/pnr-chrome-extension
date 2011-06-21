@@ -59,6 +59,8 @@ PNRStatus.callback = function(data)
 		   + '</div>'
 		);
 		$('#results-block').append(trainnode);
+		$('#parent-wrap').height(20);
+		$('#results-block').height(10);
 	}
 	else
 	{
@@ -125,6 +127,7 @@ PNRStatus.callback = function(data)
     	var newNode = $(htmlcontent);
     	$('#train-num-' + trainnum + ' .pnr-items').append(newNode);
 		$('#parent-wrap').height(20);
+		$('#results-block').height(10);
 
   }
 
