@@ -1,5 +1,4 @@
-- Tighter integration with IRCTC
-- Add hooks in cleartrip as well
+TODO
 - Print ticket directly from the extension
 - Add option to post for prediction analysis in indiarailinfo.com (not sure if the site owner would like it)
 - Use trainenquiry.com to predict arrival time if journey is currently on. (via @logic)
@@ -8,3 +7,7 @@
 DONE
 - Change UI (current UI sucks) - 21 June
 - Add help page after install
+- Tighter integration with IRCTC - added to post-ticket-book page.
+
+SKIPPED
+- Add hooks in cleartrip as well - I guess few people use cleartrip for trains, will do it if someone needs it.
