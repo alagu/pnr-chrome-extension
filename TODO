@@ -1,4 +1,3 @@
-- Add help page after install
 - Tighter integration with IRCTC
 - Add hooks in cleartrip as well
 - Print ticket directly from the extension
@@ -8,3 +7,4 @@
 
 DONE
 - Change UI (current UI sucks) - 21 June
+- Add help page after install
