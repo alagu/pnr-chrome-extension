@@ -287,9 +287,9 @@ PNRStatus.fetchAll = function()
 
 PNRStatus.getStatusClass = function(status)
 {
-	if(status.indexOf('CNF') != -1)
+	if(status.indexOf('WL') != -1)
 	{
-		return 'cnf';
+		return 'waitlist';
 	}
 	else if(status.indexOf('RAC') != -1)
 	{
@@ -297,7 +297,7 @@ PNRStatus.getStatusClass = function(status)
 	}
 	else
 	{
-		return 'waitlist';
+		return 'cnf';
 	}
 }
 
