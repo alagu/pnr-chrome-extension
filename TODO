@@ -6,8 +6,8 @@ TODO
 Usability improvements
 
 - Sort the pnr status by date of travel(ascending)
-- Show the seat position(Mod 8.except for F1,C1,D1,A1)
-- Show full detail instead of abbrevated form
+- Show the seat position(Mod 8.only for S1,B1)
+- Show full detail instead of abbrevated form (i.e. Instead CNF S3,51,GN showing as Confirmed, S3,54,General & Seat position(like Upper))
 
 
 DONE
