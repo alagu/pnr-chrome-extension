@@ -3,6 +3,12 @@ PNRStatus.pnrnum = [];
 (function()
 {
 
+var pnrAlreadyAddedAlert = function()
+{
+	alert('This PNR number is already being tracked');
+	return false;
+}
+
 var applyAddPNRButtons = function(node)
 {
   var pnrNumber = $(node).html();
@@ -14,7 +20,7 @@ var applyAddPNRButtons = function(node)
 	}
 	else
 	{
-		var nodeHTML = "<img src='http://pnrapi.appspot.com/static/add_to_pnr.png'>" + "<span>"  +pnrNumber + "</span>";		
+		var nodeHTML = "<img class='pnr_added'  src='http://pnrapi.appspot.com/static/pnr_added.png' title='PNR " + pnrNumber + " is already being tracked' alt='PNR " + pnrNumber + " is already being tracked'>" + "<span>"  +pnrNumber + "</span>";		
 	}
 	
     $(node).html(nodeHTML);
@@ -39,15 +45,19 @@ var storePNRResponse = function(pnr_number)
 
 var bulkAddClick = function(e)
 {
- $(this).hide();
- var pnrSpanNode = $(this.parentNode).find('span');
- if(pnrSpanNode.length > 0)
- {
-    pnrSpanNode = pnrSpanNode[0];
-    var pnrNumber = parseInt($(pnrSpanNode).html());
-    addPNR(pnrNumber);
- }
+ if($(this).hasClass('add_to_pnr')) {
+	 $(this).attr('src','http://pnrapi.appspot.com/static/pnr_added.png');
+	 $(this).attr('class','pnr_added');
+	 $('img.pnr_added').click(pnrAlreadyAddedAlert);
 
+	 var pnrSpanNode = $(this.parentNode).find('span');
+	 if(pnrSpanNode.length > 0)
+	 {
+	    pnrSpanNode = pnrSpanNode[0];
+	    var pnrNumber = parseInt($(pnrSpanNode).html());
+	    addPNR(pnrNumber);
+	 }
+ }
 }
 
 var addPNR = function(pnrNumber)
@@ -141,8 +151,10 @@ var addToPNRButton = function()
 
    $('img.add_to_pnr').css('cursor','pointer');
    $('img.add_to_pnr').click(bulkAddClick);
+   $('img.pnr_added').click(pnrAlreadyAddedAlert);
   
 }
+
 
 
 var search_map = {'repassword':addToPNRButton,
