@@ -1,5 +1,15 @@
 <script src="http://code.jquery.com/jquery-1.4.2.js"></script>
 <script>
+
+    /* Get stored PNR*/
+    function getStoredPNR()
+    {
+        var pnrnum = localStorage['pnrnum']; 
+
+        pnrnum = pnrnum ? pnrnum.split(',') : [];
+        return pnrnum;
+    }
+    
   function onRequest(request, sender, callback) {
     if (request.action == 'getJSON') {
       var xhr = new XMLHttpRequest();
@@ -14,10 +24,8 @@
     }
     else if ( request.action == 'storePNR')
     {
-       var pnrnum = localStorage['pnrnum']; 
 
-       pnrnum = pnrnum ? pnrnum.split(',') : [];
-
+       var pnrnum = getStoredPNR();
        var num = request.pnr_num_store + '';
 
        if(num.length == 10 && pnrnum.indexOf(num) == -1)
@@ -29,9 +37,14 @@
        
        callback(num);
     }
+    else if (request.action == 'getStoredPNR')
+    {
+        callback(getStoredPNR());
+    }
 
   }
     chrome.extension.onRequest.addListener(onRequest);
+
 
  /* Post install stuff */
   function install_notice() {
