@@ -3,6 +3,12 @@ TODO
 - Add option to post for prediction analysis in indiarailinfo.com (not sure if the site owner would like it)
 - Use trainenquiry.com to predict arrival time if journey is currently on. (via @logic)
 
+Usability improvements
+
+- Sort the pnr status by date of travel(ascending)
+- Show the seat position(Mod 8.only for S1,B1)
+- Show full detail instead of abbrevated form (i.e. Instead CNF S3,51,GN showing as Confirmed, S3,54,General & Seat position(like Upper))
+
 
 DONE
 - Change UI (current UI sucks) - 21 June
