@@ -86,7 +86,7 @@ var addToBankResponsePage = function()
 	    	var split = (content.match(/(\d+)/));
 			if(split.length) {
 	    		var pnr_number = (split[0]);
-			 	var k = $('<div class="pnr_message" style="display:none;" id="'+ pnr_number +'">You just booked a ticket! Add it to your PNR watchlist (<img src="http://pnrapi.appspot.com/static/pnr.png">) to track the status.<div><button class="pnr_message_button" id="pnr_print_button">Print Ticket</button><button class="pnr_message_button" id="pnr_add_button">Add to Watchlist</button></div></div>');
+			 	var k = $('<div class="pnr_message" style="display:none;" id="'+ pnr_number +'">You just booked a ticket! Add it to your PNR watchlist (<img src="http://pnrapi.appspot.com/static/pnr.png">) to track the status.<div><button class="pnr_message_button" id="pnr_add_button">Add to Watchlist</button></div></div>');
 			    k.insertBefore('#maincontentbody');
 			    $('.pnr_message').css('background', '#E3E9FF url(http://pnrapi.appspot.com/static/blue_info.png) no-repeat 10px 2px');
 			    $('.pnr_message').css('border', '1px solid #68E');
@@ -106,7 +106,6 @@ var addToBankResponsePage = function()
 			    $('.pnr_message_button').css('background-color','#68E');
 			    $('.pnr_message_button').css('-webkit-border-radius','4px');
 			    $('#pnr_add_button').click(ticketConfirmAddPNR);
-			    $('#pnr_print_button').click(printTicketPopup);
 
 			    if(k) { k.show('slow');}
 			}
