@@ -103,6 +103,8 @@ PNRStatus.callback = function(data)
         htmlcontent += ' </div>';
 		htmlcontent += '<div class="travel-date">';
         htmlcontent += PNRStatus.getDateMarkup(return_obj.data.travel_date.timestamp);
+        //htmlcontent += '      <div class="travel-date-date"> From: ' + return_obj.data.board + '</div>';
+        //htmlcontent += '      <div class="travel-date-date"> To: ' + return_obj.data.alight + '</div>';
 		htmlcontent += '</div>';
         htmlcontent += ' <div class="travel-tickets">';
 
