@@ -287,7 +287,8 @@ PNRStatus.fetchAll = function()
 
 PNRStatus.getStatusClass = function(status)
 {
-	if(status.indexOf('WL') != -1)
+	if(status.indexOf('WL') != -1
+	  ||status.indexOf('W/L') != -1)
 	{
 		return 'waitlist';
 	}
