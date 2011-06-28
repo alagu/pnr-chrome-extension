@@ -153,15 +153,16 @@ ul
 .train-block .pnr-item .travel-date
 {
 	float:left;
-	height:60px;
-	width:35px;
-	padding:10px;
+	height:80px;
+	width:80px;
+	/* padding:10px; */
 	/*background-color:#F4F6FC;*/
 	background-color:#E3E9FF;
 }
 
 .train-block .travel-date .travel-date-date,
-.train-block .travel-date .travel-date-month
+.train-block .travel-date .travel-date-month,
+.train-block .travel-date .travel-from-to
 {
 	text-align:center;
 	font-size:110%;
@@ -204,9 +205,10 @@ ul
 }
 
 
-.train-block .travel-date .travel-date-date
+.train-block .travel-date .travel-date-date,
+.train-block .travel-date .travel-from-to
 {
-	margin-top:10px;
+	margin-top:5px;
 } 
 
 .train-block .delete-button
