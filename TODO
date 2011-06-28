@@ -1,12 +1,12 @@
 TODO
-- Print ticket directly from the extension
+- Print ticket directly from the extension. Save HTML leaving last 2 tables which contain adbanner & 
+instructions which s not needed . By this we can print 2 tickets in a page . Green initiative :)
 - Add option to post for prediction analysis in indiarailinfo.com (not sure if the site owner would like it)
 - Use trainenquiry.com to predict arrival time if journey is currently on. (via @logic)
 
 Usability improvements
 
 - Sort the pnr status by date of travel(ascending)
-- Show starting and end destination
 - Show the seat position(Mod 8.only for S1,B1)
 - Show full detail instead of abbrevated form (i.e. Instead CNF S3,51,GN showing as Confirmed, S3,54,General & Seat position(like Upper))
 
@@ -15,6 +15,7 @@ DONE
 - Change UI (current UI sucks) - 21 June
 - Add help page after install
 - Tighter integration with IRCTC - added to post-ticket-book page.
+- Show starting and end destination
 
 SKIPPED
 - Add hooks in cleartrip as well - I guess few people use cleartrip for trains, will do it if someone needs it.
