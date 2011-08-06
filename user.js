@@ -164,13 +164,13 @@ PNRStatus.getPNRStatus = function(pnrInteger)
 }
 
 PNRStatus.init = function(){
-  PNRStatus.fetchAll();
-  PNRStatus.setDisplays();
+//  PNRStatus.fetchAll();
+  PNRStatus.	();
 
-  $('#add-action').click(PNRStatus.addPNR);
-  $('#add-toggle').click(PNRStatus.toggleEdit);
-  $('#edit-toggle').click(PNRStatus.toggleEdit);
-  $('#parent-wrap').height(20);
+//  $('#add-action').click(PNRStatus.addPNR);
+//  $('#add-toggle').click(PNRStatus.toggleEdit);
+//  $('#edit-toggle').click(PNRStatus.toggleEdit);
+//  $('#parent-wrap').height(20);
 }
 
 PNRStatus.updateListeners = function()
@@ -180,7 +180,7 @@ PNRStatus.updateListeners = function()
 
 PNRStatus.setDisplays = function()
 { 
-	$('#add-pnr-input').hide();
+/*	$('#add-pnr-input').hide();
 	$('.travel-pnr-number').hide();
 	$('.delete-button').hide();
 	$('.travel-tickets').show();
@@ -188,7 +188,7 @@ PNRStatus.setDisplays = function()
   	{
     	$('#add-pnr-input').show();
 		$('#add-toggle').html('-');
-  	}
+  	}*/
 }
 
 PNRStatus.toggleEdit = function(ev)
