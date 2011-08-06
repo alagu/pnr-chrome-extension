@@ -12,6 +12,11 @@ Red shadow - #CC6E76
 
 */
 
+html
+{
+	height:500px;
+}
+
 .clrfix
 {
 	height:1px;
@@ -23,6 +28,7 @@ body
 {
 	font-family:Arial;
 	width:590px;
+	height:450px;
 	background-image: -webkit-gradient(
 	    linear,
 	    left bottom,
@@ -31,6 +37,31 @@ body
 	    color-stop(0.55, rgb(235,235,235))
 	);
 	
+}
+
+#status-items-block
+{
+ height:400px;	
+ overflow:auto;
+}
+
+::-webkit-scrollbar 
+{
+	margin-left:2px;
+	width:6px;
+	background-color:#fff;
+}
+
+::-webkit-scrollbar-thumb 
+{
+	background-color:#bbb;
+}
+
+
+.status-item
+{
+	margin-bottom:15px;
+	margin-right: 5px;
 }
 
 .date-info 
@@ -58,7 +89,7 @@ body
 	margin-left:76px;
 	border-radius: 4px;
 	background-color:#fff;
-	box-shadow: 5px 5px 5px #ebebeb;
+	box-shadow: 1px 2px 2px 2px #ebebeb;
 	padding:5px;
 }
 

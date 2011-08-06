@@ -165,7 +165,7 @@ PNRStatus.getPNRStatus = function(pnrInteger)
 
 PNRStatus.init = function(){
 //  PNRStatus.fetchAll();
-  PNRStatus.	();
+  PNRStatus.setDisplays();
 
 //  $('#add-action').click(PNRStatus.addPNR);
 //  $('#add-toggle').click(PNRStatus.toggleEdit);
@@ -180,7 +180,62 @@ PNRStatus.updateListeners = function()
 
 PNRStatus.setDisplays = function()
 { 
-/*	$('#add-pnr-input').hide();
+	
+	var markup = '\
+	<div class="status-item" id="${pnr_num}">\
+        <div class="date-info">\
+            <div class="date">\
+                16 Aug \
+            </div>\
+            <div class="year">\
+                2011\
+            </div>\
+        </div>\
+        <div class="ticket-status">\
+            <div class="pnr-num">\
+                PNR 523-0987474\
+            </div>\
+            <div class="start-destination">\
+                BANGALORE CITY JUNCTION - THANJAVUR JUNCTION\
+            </div>\
+            <div class="ticket-items">\
+                <ul class="ticket-item-list">\
+                    <li class="cnf"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li>\
+                    <li class="wl"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li>\
+                    <li class="rac"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li>\
+                    <li class="cnf"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li>\
+                    <li class="wl"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li>\
+                    <li class="clrfix"></li>\
+                </ul>\
+                <div class="train-name-block">\
+                    <div class="train-num">17209</div> <div class="train-name">MYSORE MAILADUTHURAI EXPRESS</div>\
+                </div>\
+                <div style="clear:both;"></div>\
+            </div>\
+        </div>\
+    </div>\
+	 ';
+	
+	var node = 	$.tmpl(markup,{'pnr_num':'123451'});
+	$('#status-items-block').append(node);
+	
+	var node = 	$.tmpl(markup,{'pnr_num':'123452'});
+	$('#status-items-block').append(node);
+	
+	var node = 	$.tmpl(markup,{'pnr_num':'123453'});
+	$('#status-items-block').append(node);
+	
+	var node = 	$.tmpl(markup,{'pnr_num':'123454'});
+	$('#status-items-block').append(node);
+	
+	var node = 	$.tmpl(markup,{'pnr_num':'123455'});
+	$('#status-items-block').append(node);
+	
+	/*
+	var node = 	$.tmpl(markup,{'pnr_num':'123456'});
+	$('#status-items-block').append(node);
+	
+	$('#add-pnr-input').hide();
 	$('.travel-pnr-number').hide();
 	$('.delete-button').hide();
 	$('.travel-tickets').show();
@@ -305,5 +360,4 @@ PNRStatus.getStatusClass = function(status)
 }
 
 PNRStatus.init();
-
 })();
