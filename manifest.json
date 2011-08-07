@@ -1,6 +1,6 @@
 {
   "name": "PNR Status Watchlist",
-  "version": "0.6",
+  "version": "0.6.1",
   "description": "PNR Status watchlist for your tickets",
   "background_page": "background.html",
   "permissions": [
