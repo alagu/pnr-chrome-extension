@@ -24,14 +24,14 @@ PNRStatus.callback = function(data)
   var return_obj = eval('(' + data + ')');
   if(return_obj.status == 'OK')
   {	
-    PNRStatus.updateTicketItem(return_obj.data.pnr_number, return_obj.data, true);
+    PNRStatus.updateTicketItem(return_obj.data.pnr_number, return_obj.data);
   }
 }
 
 PNRStatus.updateTicketItem = function(pnr_num,data,update)
 {
-  if(update && update == true)
-  {
+  if(data) {
+    
     var ticketNode = $('#' + pnr_num);
     var date = PNRStatus.getDate(data.travel_date.timestamp);
     ticketNode.attr('date',data.travel_date.timestamp);
@@ -43,43 +43,47 @@ PNRStatus.updateTicketItem = function(pnr_num,data,update)
     ticketNode.find('.fetching').hide();
     ticketNode.find('.ticket-status').show();
     ticketNode.find('.date-info').show();
-  }
-  
-  if(data.hasOwnProperty('passenger'))
-  {
-    ticketNode.find('.fetching-pnr').hide();
-    for(var i=0;i<data.passenger.length;i++)
-    {
-      var status = data.passenger[i];
-      var css    = PNRStatus.getStatusClass(status);
-      var number = '?';
-      var text   = 'WL';
-      if (css == 'wl'){
-        number = status.status.match(/(\d+)/)[0];
-        text   = 'WL';
-      }
-      else if (css == 'rac'){
-        text   = 'RAC';
-        number = status.status.match(/(\d+)/)[0]
-      }
-      else 
-      {
-        var splits = status.seat_number.split(',')
-        number = splits[1];
-        text   = splits[0];
-      }
-      
-      
-      var markup = '<li class="${css}"><div class="ticket-status-text">${status}</div><div class="ticket-status-num">${number}</div></li>';
-      var node   = $.tmpl(markup,{'css':css,'status':text,'number':number});
-      ticketNode.find('.ticket-item-list').append(node);
-    }
     
-    if(data.chart_prepared)
+    if(data.hasOwnProperty('passenger'))
     {
-      ticketNode.find('.chart-status').removeClass('chart-status-not-prepared');
-      ticketNode.find('.chart-status').addClass('chart-status-prepared');
-      ticketNode.find('.chart-status span').html('Chart Prepared');
+      ticketNode.find('.fetching-pnr').hide();
+      for(var i=0;i<data.passenger.length;i++)
+      {
+        var status = data.passenger[i];
+        var css    = PNRStatus.getStatusClass(status);
+        var number = '?';
+        var text   = 'WL';
+        if (css == 'wl'){
+          number = status.status.match(/(\d+)/)[0];
+          text   = 'WL';
+        }
+        else if (css == 'rac'){
+          text   = 'RAC';
+          number = status.status.match(/(\d+)/)[0]
+        }
+        else 
+        {
+          var splits = status.seat_number.split(',')
+          number = splits[1];
+          text   = splits[0];
+        }
+        
+        
+        var markup = '<li class="${css}"><div class="ticket-status-text">${status}</div><div class="ticket-status-num">${number}</div></li>';
+        var node   = $.tmpl(markup,{'css':css,'status':text,'number':number});
+        ticketNode.find('.ticket-item-list').append(node);
+      }
+      
+      if(data.chart_prepared)
+      {
+        ticketNode.find('.chart-status').removeClass('chart-status-not-prepared');
+        ticketNode.find('.chart-status').addClass('chart-status-prepared');
+        ticketNode.find('.chart-status span').html('Chart Prepared');
+      }
+      
+      delete data.passenger;
+      var json = $.toJSON(data);
+      localStorage.setItem(pnr_num,json);
     }
   }
 }
@@ -98,11 +102,6 @@ PNRStatus.init = function(){
   PNRStatus.populatePNR();
   PNRStatus.setDisplays();
   PNRStatus.fetchAll();
-}
-
-PNRStatus.updateListeners = function()
-{
-  $('.delete-button-item').click(PNRStatus.deletePNR);
 }
 
 PNRStatus.setDisplays = function()
@@ -152,8 +151,16 @@ PNRStatus.setDisplays = function()
 	  $('#status-items-block').append(node);
 	}
 	$('.ticket-status').hide();
-	$('.date-info').show();
+	$('.date-info').hide();
 	$('.delete').click(PNRStatus.deletePNR);
+	
+	for (var i=0;i<PNRStatus.pnrnum.length;i++){
+	  if(localStorage.getItem(PNRStatus.pnrnum[i]))
+	  {
+	    var data = $.parseJSON(localStorage.getItem(PNRStatus.pnrnum[i]));
+	    PNRStatus.updateTicketItem(PNRStatus.pnrnum[i],data);
+	  }
+	}
 		
 	$('#give-feedback').click(function(e){
 		chrome.tabs.create({'url':'https://chrome.google.com/webstore/detail/almdggoleggeecgelbjekpmefpohdjck'});
@@ -168,6 +175,8 @@ PNRStatus.deletePNR = function(ev)
    {
      PNRStatus.deleteFromLocalStorage(pnrnum);
    }
+  
+   PNRStatus.trackEvent('deletePNR');
 }
 
 PNRStatus.deleteFromLocalStorage = function(num)
