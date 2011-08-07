@@ -34,12 +34,15 @@ PNRStatus.updateTicketItem = function(pnr_num,data,update)
   {
     var ticketNode = $('#' + pnr_num);
     var date = PNRStatus.getDate(data.travel_date.timestamp);
+    ticketNode.attr('date',data.travel_date.timestamp);
     ticketNode.find('.date').html(date[0] + ' ' + date[1]);
     ticketNode.find('.year').html(date[2]);
     ticketNode.find('.ticket-status .start-destination').html(data.board.name + ' - ' + data.alight.name);
     ticketNode.find('.train-name-block  .train-num').html(data.train_number);
     ticketNode.find('.train-name-block .train-name').html(data.train_name);
     ticketNode.find('.fetching').hide();
+    ticketNode.find('.ticket-status').show();
+    ticketNode.find('.date-info').show();
   }
   
   if(data.hasOwnProperty('passenger'))
@@ -57,7 +60,6 @@ PNRStatus.updateTicketItem = function(pnr_num,data,update)
         text   = 'WL';
       }
       else if (css == 'rac'){
-        
       }
       else 
       {
@@ -147,6 +149,8 @@ PNRStatus.setDisplays = function()
 	  var node = 	$.tmpl(markup,{'pnr_num':PNRStatus.pnrnum[i]});
 	  $('#status-items-block').append(node);
 	}
+	$('.ticket-status').hide();
+	$('.date-info').show();
 	
 	$('#give-feedback').click(function(e){
 		chrome.tabs.create({'url':'https://chrome.google.com/webstore/detail/almdggoleggeecgelbjekpmefpohdjck'});
