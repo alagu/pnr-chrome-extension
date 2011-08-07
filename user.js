@@ -1,6 +1,46 @@
 PNRStatus = {};
 PNRStatus.sortInProgress = false;
 (function(){
+
+PNRStatus.ticketMarkup = '\
+	<div class="status-item" id="${pnr_num}">\
+	      <div class="fetching">\
+	           Fetching status for PNR ${pnr_num}\
+	      </div>\
+        <div class="date-info">\
+            <div class="date">\
+                ${date} \
+            </div>\
+            <div class="year">\
+                ${year}\
+            </div>\
+        </div>\
+        <div class="ticket-status">\
+            <div class="delete">x</div>\
+            <div class="pnr-num">\
+                PNR ${pnr_num}\
+            </div>\
+            <div class="start-destination">\
+                ${source}  ${destination}\
+            </div>\
+            <div class="ticket-items">\
+                <div class="fetching-pnr">\
+        	           Fetching status \
+        	      </div>\
+                <ul class="ticket-item-list">\
+                    <!--li class="cnf"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li-->\
+                    <li class="clrfix"></li>\
+                </ul>\
+                <div class="train-name-block">\
+                    <div class="train-num">${train_num}</div> <div class="train-name">${train_name}</div>\
+					          <div class="chart-status chart-status-not-prepared"><span class="chart-status-text">Chart not prepared</span></div>\
+                </div>\
+                <div style="clear:both;"></div>\
+            </div>\
+        </div>\
+    </div>\
+	 ';  
+  
 PNRStatus.getDateMarkup = function(timestamp)
 {
 	var dateTuple = PNRStatus.getDate(timestamp);
@@ -103,7 +143,7 @@ PNRStatus.updateTicketItem = function(pnr_num,data,update)
       localStorage.setItem(pnr_num,json);
     }
     
-    PNRStatus.sort(pnr_num);
+    PNRStatus.sort();
   }
 }
 
@@ -111,7 +151,6 @@ PNRStatus.sort = function(pnr_num){
   if(!PNRStatus.sortInProgress) {
     PNRStatus.sortInProgress = true;
     var allNodes = $('.status-item');
-    var mytimestamp = $('#' + pnr_num).attr('date');
     var node_list = [];
     for(var i=0;i<allNodes.length;i++)
     {
@@ -119,17 +158,29 @@ PNRStatus.sort = function(pnr_num){
       node_list.push(node_info);
     }
     
+    //Sort them. (Bubble)
+    
     for(var i=0;i<node_list.length;i++)
     {
-      var yourtimestamp = node_list[i].date;
-      if(mytimestamp < yourtimestamp)
+      for(var j=0;j<node_list.length-1;j++)
       {
-      //  $('#'+pnr_num).insertBefore('#'+node[i].pnr);
+        if(node_list[j].date > node_list[j+1].date)
+        {
+          //Swap
+          var tmp = node_list[j];
+          node_list[j] = node_list[j+1];
+          node_list[j+1] = tmp;
+        }
       }
-      //console.log(yourtimestamp + ' vs ' + mytimestamp);
     }
     
-    console.log(node_list);
+    for(var i=node_list.length-1;i>=1;i--)
+    {
+      var smallerdate = node_list[i-1];
+      var largerdate  = node_list[i];
+      
+      $('#' + smallerdate.pnr).insertBefore('#'+largerdate.pnr);
+    }
     PNRStatus.sortInProgress = false;
   }
 }
@@ -153,47 +204,8 @@ PNRStatus.init = function(){
 PNRStatus.setDisplays = function()
 { 
 	
-	var markup = '\
-	<div class="status-item" id="${pnr_num}">\
-	      <div class="fetching">\
-	           Fetching status for PNR ${pnr_num}\
-	      </div>\
-        <div class="date-info">\
-            <div class="date">\
-                ${date} \
-            </div>\
-            <div class="year">\
-                ${year}\
-            </div>\
-        </div>\
-        <div class="ticket-status">\
-            <div class="delete">x</div>\
-            <div class="pnr-num">\
-                PNR ${pnr_num}\
-            </div>\
-            <div class="start-destination">\
-                ${source}  ${destination}\
-            </div>\
-            <div class="ticket-items">\
-                <div class="fetching-pnr">\
-        	           Fetching status \
-        	      </div>\
-                <ul class="ticket-item-list">\
-                    <!--li class="cnf"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li-->\
-                    <li class="clrfix"></li>\
-                </ul>\
-                <div class="train-name-block">\
-                    <div class="train-num">${train_num}</div> <div class="train-name">${train_name}</div>\
-					          <div class="chart-status chart-status-not-prepared"><span class="chart-status-text">Chart not prepared</span></div>\
-                </div>\
-                <div style="clear:both;"></div>\
-            </div>\
-        </div>\
-    </div>\
-	 ';
-	
 	for (var i=0;i<PNRStatus.pnrnum.length;i++){
-	  var node = 	$.tmpl(markup,{'pnr_num':PNRStatus.pnrnum[i]});
+	  var node = 	$.tmpl(PNRStatus.ticketMarkup,{'pnr_num':PNRStatus.pnrnum[i]});
 	  $('#status-items-block').append(node);
 	}
 	$('.ticket-status').hide();
@@ -244,17 +256,71 @@ PNRStatus.deleteFromLocalStorage = function(num)
 
 PNRStatus.addPNR = function(ev)
 {
- var num = $('#add-pnr').val();
+ var add_pnr_val = $('#add-pnr').val();
+ var num = add_pnr_val.match(/(\d+)/)[0];
+ 
+ $('#add-pnr').hide();
+ $('#add-button').hide();
+ 
+ $('.add-response').show();
+ 
 
- if(num.length == 10 && PNRStatus.pnrnum.indexOf(num) == -1)
+ var addsuccess = false;
+ if(num.length != 10) 
  {
+    $('.add-response').html(' Invalid PNR number');
+    $('.add-response').addClass('error');
+     PNRStatus.resetAddPNRAfter(2);
+ }
+ else if(PNRStatus.pnrnum.indexOf(num) != -1)
+ {
+   $('.add-response').html(' PNR Number already being tracked');
+   $('.add-response').addClass('error');
+   PNRStatus.resetAddPNRAfter(2);
+ }
+ else
+ {
+   $('.add-response').html(' Alright, I\'m tracking it');
+   $('.add-response').addClass('success');
    PNRStatus.pnrnum.push(num);
+   addsuccess = true;
+   PNRStatus.resetAddPNRAfter(2);
  }
 
- $('#add-pnr').val('');
 
+ if(addsuccess)
+ {
+   PNRStatus.addPNRToDisplay(num);
+ }
+ 
+ $('#add-pnr').val('');
+ 
  localStorage['pnrnum'] = PNRStatus.pnrnum.join(',');
  PNRStatus.trackEvent('addPNR');
+}
+
+
+PNRStatus.addPNRToDisplay = function(num)
+{
+   var node = 	$.tmpl(PNRStatus.ticketMarkup,{'pnr_num':num});
+   $('#status-items-block').append(node);
+   node.find('.ticket-status').hide();
+ 	 node.find('.date-info').hide();
+ 	 node.find('.delete').click(PNRStatus.deletePNRCB);
+ 	 PNRStatus.getPNRStatus(num);
+}
+
+PNRStatus.resetAddPNRAfter  = function(time)
+{
+  setTimeout(function(){
+    $('#add-pnr').show();
+    $('#add-button').show();
+    $('#add-pnr').val('');
+    $('.add-response').html('Adding');
+    $('.add-response').removeClass('error');
+    $('.add-response').removeClass('success');
+    $('.add-response').hide();
+  },time*1000)
 }
 
 PNRStatus.pnrnum = [];

@@ -250,6 +250,44 @@ body
 	padding:0 88px 0 10px;
 }
 
+#edit-block #add-block .add-response
+{
+	box-shadow: 1px 2px 2px 2px #ebebeb;
+  background: #ccc;
+  opacity: 2;
+  width: 308px;
+  border-radius: 21px;
+  padding: 6px;
+  font-size: 16px;
+  display:none;
+  text-align:center;
+  font-weight:bold;
+}
+
+#edit-block #add-block .add-response.success
+{
+  background-image: -webkit-gradient(
+	    linear,
+	    left bottom,
+	    left top,
+	    color-stop(0.11, #568D6D),
+	    color-stop(0.55, #96CDB0)
+	);
+  color:#fff;
+}
+
+#edit-block #add-block .add-response.error
+{
+  background-image: -webkit-gradient(
+	    linear,
+	    left bottom,
+	    left top,
+	    color-stop(0.05, #D01313),
+	    color-stop(0.95, #F5CDCB)
+	);
+  color:#fff;
+}
+
 #edit-block #add-block #add-button
 {
 	padding:8px 10px;	
