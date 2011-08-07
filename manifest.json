@@ -1,10 +1,10 @@
 {
   "name": "PNR Status Watchlist",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "PNR Status watchlist for your tickets",
   "background_page": "background.html",
   "permissions": [
-    "http://localhost/",
+    "http://pnrapi.alagu.net/",
     "notifications"
   ],
    "icons": {
