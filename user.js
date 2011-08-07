@@ -187,7 +187,7 @@ PNRStatus.sort = function(pnr_num){
 
 PNRStatus.getPNRStatus = function(pnrInteger)
 {
-  var url = 'http://localhost/api/v1.0/pnr/' + pnrInteger;// + '?jsonp=pnrInteger';
+  var url = 'http://pnrapi.alagu.net/api/v1.0/pnr/' + pnrInteger;// + '?jsonp=pnrInteger';
   var chrome_getJSON = function(url, callback) {
         chrome.extension.sendRequest({action:'getJSON',url:url}, callback);
   }
