@@ -297,3 +297,17 @@ body
 	font-size:12px;
 	padding-bottom:20px;
 }
+
+.delete
+{
+  font-size:9px;
+  border:1px solid #bbb;
+  padding:0 1px;
+  display:inline-block;
+  float:right;
+  position:relative;
+  left:2px;
+  top:-1px;
+  font-weight:bold;
+  cursor:pointer;
+}

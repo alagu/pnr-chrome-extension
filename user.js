@@ -54,12 +54,13 @@ PNRStatus.updateTicketItem = function(pnr_num,data,update)
       var css    = PNRStatus.getStatusClass(status);
       var number = '?';
       var text   = 'WL';
-      console.log(css);
       if (css == 'wl'){
         number = status.status.match(/(\d+)/)[0];
         text   = 'WL';
       }
       else if (css == 'rac'){
+        text   = 'RAC';
+        number = status.status.match(/(\d+)/)[0]
       }
       else 
       {
@@ -121,6 +122,7 @@ PNRStatus.setDisplays = function()
             </div>\
         </div>\
         <div class="ticket-status">\
+            <div class="delete">x</div>\
             <div class="pnr-num">\
                 PNR ${pnr_num}\
             </div>\
@@ -151,7 +153,8 @@ PNRStatus.setDisplays = function()
 	}
 	$('.ticket-status').hide();
 	$('.date-info').show();
-	
+	$('.delete').click(PNRStatus.deletePNR);
+		
 	$('#give-feedback').click(function(e){
 		chrome.tabs.create({'url':'https://chrome.google.com/webstore/detail/almdggoleggeecgelbjekpmefpohdjck'});
 	})
@@ -159,6 +162,12 @@ PNRStatus.setDisplays = function()
 
 PNRStatus.deletePNR = function(ev)
 {
+   var pnrnum = this.parentNode.parentNode.id;
+   $('#' + pnrnum).remove();
+   if(PNRStatus.pnrnum.indexOf(pnrnum) >= 0)
+   {
+     PNRStatus.deleteFromLocalStorage(pnrnum);
+   }
 }
 
 PNRStatus.deleteFromLocalStorage = function(num)
@@ -214,16 +223,16 @@ PNRStatus.fetchAll = function()
 
 PNRStatus.getStatusClass = function(status)
 {
-	if(status.status.indexOf('W/L') != -1
-	  ||status.seat_number.indexOf('W/L') != -1)
-	{
-		return 'wl';
-	}
-	else if( status.status.indexOf('RAC') != -1
+	 if( status.status.indexOf('RAC') != -1
 	       ||status.seat_number.indexOf('RAC') != -1
          )
 	{
 		return 'rac';
+	}
+	else if(status.status.indexOf('W/L') != -1
+	  ||status.seat_number.indexOf('W/L') != -1)
+	{
+		return 'wl';
 	}
 	else
 	{
