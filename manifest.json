@@ -4,7 +4,7 @@
   "description": "PNR Status watchlist for your tickets",
   "background_page": "background.html",
   "permissions": [
-    "http://pnrapi.appspot.com/",
+    "http://localhost/",
     "notifications"
   ],
    "icons": {

@@ -1,24 +1,5 @@
 PNRStatus = {};
 (function(){
-PNRStatus.log = function(message, level) {
-  var prestring = '[PNRStatus] ';
-  if(!level || level == 4) {
-    console.log(prestring + message);
-  } else if(level == 4) {
-    console.log(prestring + message);
-  } else if(level == 3) {
-    console.info(prestring + message);
-  } else if(level == 2) {
-    console.warn(prestring + message);
-  } else if(level == 1) {
-    console.error(prestring + message);
-  }
-};
-
-/*
- * {'status': 'OK', 'data': {'passenger': [{'status': 'CNF', 'seat_number': 'D8  , 31,GN'}, {'status': 'CNF', 'seat_number': 'D8  , 32,GN'}], 'from': 'SBC', 'alight': 'CBE', 'pnr_number': '4541990940', 'train_number': '*12677', 'to': 'CBE', 'board': 'SBC', 'train_name': 'ERNAKULAM EXP', 'travel_date': {'date': '2-6-2011', 'timestamp': 1306972800}, 'class': '2S'}}
- */
-
 PNRStatus.getDateMarkup = function(timestamp)
 {
 	var dateTuple = PNRStatus.getDate(timestamp);
@@ -43,134 +24,77 @@ PNRStatus.callback = function(data)
   var return_obj = eval('(' + data + ')');
   if(return_obj.status == 'OK')
   {	
-	var trainnum = return_obj.data.train_number.match(/(\d+)/);
-	trainnum = trainnum[0];
-	var trainnode = $('#train-num-' + trainnum);
-	return_obj.data.train_number = return_obj.data.train_number.replace('*','')
-	if(!(trainnode.length)){
-		//Train node not available.
-		trainnode = $(
-			 '<div class="train-block" id="train-num-' + trainnum + '">'
-	       + '	<div class="train-info">'
-	       +     return_obj.data.train_number + ' ' + return_obj.data.train_name
-	       + '	</div>'
-	 	   + '	<div class="pnr-items">'
-		   + '	</div>'
-		   + '</div>'
-		);
-		$('#results-block').append(trainnode);
-		$('#parent-wrap').height(20);
-		$('#results-block').height(10);
-	}
-	else
-	{
-		trainnode = trainnode[0];
-	}
-	
-	/*
-	<div class="pnr-items">
-        <div class="pnr-item" id="pnr-num-123456">
-            <div class="delete-button">
-                <button>Delete</button>
-            </div>
-            <div class="travel-date" >
-                <div class="travel-date-date">16</div>
-                <div class="travel-date-month">Jun</div>
-            </div>
-            <div class="travel-tickets">
-                <div class="travel-ticket-item waitlist">
-                    W/L 35
-                </div>
-                <div class="travel-ticket-item rac">
-                    RAC 56
-                </div>
-                <div class="travel-ticket-item cnf">
-                    CNF S2 8
-                </div>
-                
-            </div>
-            <div class="travel-pnr-number">
-                <span class="pnr-label">PNR</span><span class="pnr-number-value">454585849494</span>
-            </div>
-            <div style="clear:both;"></div>
-        </div>
-    
-	 */
-	
-	var htmlcontent  = '<div class="pnr-item" id="pnr-num-' + return_obj.data.pnr_number + '">';
-        htmlcontent += ' <div class="delete-button">';
-        htmlcontent += '     <button class="delete-button-item">Delete</button>';
-        htmlcontent += ' </div>';
-		htmlcontent += '<div class="travel-date">';
-        htmlcontent += PNRStatus.getDateMarkup(return_obj.data.travel_date.timestamp);
-        //htmlcontent += '      <div class="travel-date-date"> From: ' + return_obj.data.board + '</div>';
-        //htmlcontent += '      <div class="travel-date-date"> To: ' + return_obj.data.alight + '</div>';
-		htmlcontent += '</div>';
-        htmlcontent += ' <div class="travel-tickets">';
-
-
-        var passengercount = return_obj.data.passenger.length;
-
-        for(var i=0;i<passengercount;i++)
-        {
-          htmlcontent +=  	'<div class="travel-ticket-item ' + PNRStatus.getStatusClass(return_obj.data.passenger[i].status) + '">';
-	      htmlcontent +=    return_obj.data.passenger[i].status
-	 	  htmlcontent +=    (return_obj.data.passenger[i].status.indexOf('CNF') != -1) ? ' ' + return_obj.data.passenger[i].seat_number : '';
-	      htmlcontent +=    '</div>';
-        }
-
-        htmlcontent += ' </div>';
-        htmlcontent += ' <div class="travel-pnr-number">';
-        htmlcontent += '     <span class="pnr-label">PNR</span><span class="pnr-number-value">' + return_obj.data.pnr_number + '</span>';
-        htmlcontent += ' </div>';
-        htmlcontent += ' <div style="clear:both;"></div>';
-    	htmlcontent += '</div>';
-    
-    	var newNode = $(htmlcontent);
-    	$('#train-num-' + trainnum + ' .pnr-items').append(newNode);
-		$('#parent-wrap').height(20);
-		$('#results-block').height(10);
-
+    PNRStatus.updateTicketItem(return_obj.data.pnr_number, return_obj.data, true);
   }
-
-  PNRStatus.hideLoading();
-  PNRStatus.setDisplays();
-  PNRStatus.updateListeners();
 }
 
-PNRStatus.showLoading = function()
+PNRStatus.updateTicketItem = function(pnr_num,data,update)
 {
-	$('#notif-message').show();
-}
-
-PNRStatus.hideLoading = function()
-{
-	$('#notif-message').hide();
+  if(update && update == true)
+  {
+    var ticketNode = $('#' + pnr_num);
+    var date = PNRStatus.getDate(data.travel_date.timestamp);
+    ticketNode.find('.date').html(date[0] + ' ' + date[1]);
+    ticketNode.find('.year').html(date[2]);
+    ticketNode.find('.ticket-status .start-destination').html(data.board.name + ' - ' + data.alight.name);
+    ticketNode.find('.train-name-block  .train-num').html(data.train_number);
+    ticketNode.find('.train-name-block .train-name').html(data.train_name);
+    ticketNode.find('.fetching').hide();
+  }
+  
+  if(data.hasOwnProperty('passenger'))
+  {
+    ticketNode.find('.fetching-pnr').hide();
+    for(var i=0;i<data.passenger.length;i++)
+    {
+      var status = data.passenger[i];
+      var css    = PNRStatus.getStatusClass(status);
+      var number = '?';
+      var text   = 'WL';
+      console.log(css);
+      if (css == 'wl'){
+        number = status.status.match(/(\d+)/)[0];
+        text   = 'WL';
+      }
+      else if (css == 'rac'){
+        
+      }
+      else 
+      {
+        var splits = status.seat_number.split(',')
+        number = splits[1];
+        text   = splits[0];
+      }
+      
+      
+      var markup = '<li class="${css}"><div class="ticket-status-text">${status}</div><div class="ticket-status-num">${number}</div></li>';
+      var node   = $.tmpl(markup,{'css':css,'status':text,'number':number});
+      ticketNode.find('.ticket-item-list').append(node);
+    }
+    
+    if(data.chart_prepared)
+    {
+      ticketNode.find('.chart-status').removeClass('chart-status-not-prepared');
+      ticketNode.find('.chart-status').addClass('chart-status-prepared');
+      ticketNode.find('.chart-status span').html('Chart Prepared');
+    }
+  }
 }
 
 PNRStatus.getPNRStatus = function(pnrInteger)
 {
-  var url = 'http://pnrapi.appspot.com/' + pnrInteger;// + '?jsonp=pnrInteger';
+  var url = 'http://localhost/api/v1.0/pnr/' + pnrInteger;// + '?jsonp=pnrInteger';
   var chrome_getJSON = function(url, callback) {
         chrome.extension.sendRequest({action:'getJSON',url:url}, callback);
   }
-
-  //var retstr = "{'status': 'OK', 'data': {'passenger': [{'status': 'Can/Mod', 'seat_number': 'W/L   10,CK'}], 'from': 'TJ', 'alight': 'MS', 'pnr_number': '4542588306', 'train_number': '*16178', 'to': 'MS', 'board': 'TJ', 'train_name': 'ROCKFORT EXPRES', 'travel_date': {'date': '19-6-2011', 'timestamp': 1308441600}, 'class': '3A'}}";
   chrome_getJSON(url, PNRStatus.callback);
-  //PNRStatus.callback(retstr);
-  //retstr = "{'status': 'OK', 'data': {'passenger': [{'status': 'CNF', 'seat_number': 'S2 59'}], 'from': 'TJ', 'alight': 'MS', 'pnr_number': '4542588306', 'train_number': '*16178', 'to': 'MS', 'board': 'TJ', 'train_name': 'ROCKFORT EXPRES', 'travel_date': {'date': '19-6-2011', 'timestamp': 1308441600}, 'class': '3A'}}";
-  
-  //PNRStatus.callback(retstr);
 }
 
 PNRStatus.init = function(){
-//  PNRStatus.fetchAll();
+  $('#add-button').click(PNRStatus.addPNR);
+  PNRStatus.populatePNR();
   PNRStatus.setDisplays();
-
-//  $('#add-action').click(PNRStatus.addPNR);
-//  $('#add-toggle').click(PNRStatus.toggleEdit);
-//  $('#edit-toggle').click(PNRStatus.toggleEdit);
-//  $('#parent-wrap').height(20);
+  PNRStatus.fetchAll();
 }
 
 PNRStatus.updateListeners = function()
@@ -183,32 +107,35 @@ PNRStatus.setDisplays = function()
 	
 	var markup = '\
 	<div class="status-item" id="${pnr_num}">\
+	      <div class="fetching">\
+	           Fetching status for PNR ${pnr_num}\
+	      </div>\
         <div class="date-info">\
             <div class="date">\
-                16 Aug \
+                ${date} \
             </div>\
             <div class="year">\
-                2011\
+                ${year}\
             </div>\
         </div>\
         <div class="ticket-status">\
             <div class="pnr-num">\
-                PNR 523-0987474\
+                PNR ${pnr_num}\
             </div>\
             <div class="start-destination">\
-                BANGALORE CITY JUNCTION - THANJAVUR JUNCTION\
+                ${source}  ${destination}\
             </div>\
             <div class="ticket-items">\
+                <div class="fetching-pnr">\
+        	           Fetching status \
+        	      </div>\
                 <ul class="ticket-item-list">\
-                    <li class="cnf"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li>\
-                    <li class="wl"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li>\
-                    <li class="rac"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li>\
-                    <li class="cnf"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li>\
-                    <li class="wl"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li>\
+                    <!--li class="cnf"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li-->\
                     <li class="clrfix"></li>\
                 </ul>\
                 <div class="train-name-block">\
-                    <div class="train-num">17209</div> <div class="train-name">MYSORE MAILADUTHURAI EXPRESS</div>\
+                    <div class="train-num">${train_num}</div> <div class="train-name">${train_name}</div>\
+					          <div class="chart-status chart-status-not-prepared"><span class="chart-status-text">Chart not prepared</span></div>\
                 </div>\
                 <div style="clear:both;"></div>\
             </div>\
@@ -216,66 +143,18 @@ PNRStatus.setDisplays = function()
     </div>\
 	 ';
 	
-	var node = 	$.tmpl(markup,{'pnr_num':'123451'});
-	$('#status-items-block').append(node);
+	for (var i=0;i<PNRStatus.pnrnum.length;i++){
+	  var node = 	$.tmpl(markup,{'pnr_num':PNRStatus.pnrnum[i]});
+	  $('#status-items-block').append(node);
+	}
 	
-	var node = 	$.tmpl(markup,{'pnr_num':'123452'});
-	$('#status-items-block').append(node);
-	
-	var node = 	$.tmpl(markup,{'pnr_num':'123453'});
-	$('#status-items-block').append(node);
-	
-	var node = 	$.tmpl(markup,{'pnr_num':'123454'});
-	$('#status-items-block').append(node);
-	
-	var node = 	$.tmpl(markup,{'pnr_num':'123455'});
-	$('#status-items-block').append(node);
-	
-	/*
-	var node = 	$.tmpl(markup,{'pnr_num':'123456'});
-	$('#status-items-block').append(node);
-	
-	$('#add-pnr-input').hide();
-	$('.travel-pnr-number').hide();
-	$('.delete-button').hide();
-	$('.travel-tickets').show();
-  	if(PNRStatus.pnrnum.length == 0)
-  	{
-    	$('#add-pnr-input').show();
-		$('#add-toggle').html('-');
-  	}*/
-}
-
-PNRStatus.toggleEdit = function(ev)
-{
-  if($('#add-pnr-input').is(':visible'))
-  {
-	$('#add-pnr-input').hide();
-	$('.travel-pnr-number').hide();
-	$('.delete-button').hide();
-	$('.travel-tickets').show();
-	$('#add-toggle').html('Add');
-  }
-  else
-  {
-	$('#add-pnr-input').show();
-	$('.travel-pnr-number').show();
-	$('.delete-button').show();
-	$('.travel-tickets').hide();
-	$('#add-toggle').html('-');
-  }
+	$('#give-feedback').click(function(e){
+		chrome.tabs.create({'url':'https://chrome.google.com/webstore/detail/almdggoleggeecgelbjekpmefpohdjck'});
+	})
 }
 
 PNRStatus.deletePNR = function(ev)
 {
-  
-  var nodeid = this.parentNode.parentNode.id;
-  var pnrnum = nodeid.split('pnr-num-')[1];
-  if(PNRStatus.pnrnum.indexOf(pnrnum) >= 0)
-  {
-    PNRStatus.deleteFromLocalStorage(pnrnum);
-    PNRStatus.fetchAll();
-  }
 }
 
 PNRStatus.deleteFromLocalStorage = function(num)
@@ -292,20 +171,17 @@ PNRStatus.deleteFromLocalStorage = function(num)
 
 PNRStatus.addPNR = function(ev)
 {
- PNRStatus.populatePNR();
-
- var num = $('#pnr-input').val();
+ var num = $('#add-pnr').val();
 
  if(num.length == 10 && PNRStatus.pnrnum.indexOf(num) == -1)
  {
    PNRStatus.pnrnum.push(num);
  }
 
- $('#pnr-input').val('');
+ $('#add-pnr').val('');
 
  localStorage['pnrnum'] = PNRStatus.pnrnum.join(',');
-
- PNRStatus.fetchAll();
+ PNRStatus.trackEvent('addPNR');
 }
 
 PNRStatus.pnrnum = [];
@@ -326,30 +202,22 @@ PNRStatus.populatePNR = function()
 
 PNRStatus.fetchAll = function()
 {
-  PNRStatus.populatePNR();
-
-  if(PNRStatus.pnrnum.length > 0)
-  { 
-	PNRStatus.showLoading();
-	$('#results-block').html('');
-  	$('#parent-wrap').height(20);
-  }
-
   for(var i=0;i<PNRStatus.pnrnum.length;i++)
   {
     PNRStatus.getPNRStatus(PNRStatus.pnrnum[i]);
   }
-
 }
 
 PNRStatus.getStatusClass = function(status)
 {
-	if(status.indexOf('WL') != -1
-	  ||status.indexOf('W/L') != -1)
+	if(status.status.indexOf('W/L') != -1
+	  ||status.seat_number.indexOf('W/L') != -1)
 	{
-		return 'waitlist';
+		return 'wl';
 	}
-	else if(status.indexOf('RAC') != -1)
+	else if( status.status.indexOf('RAC') != -1
+	       ||status.seat_number.indexOf('RAC') != -1
+         )
 	{
 		return 'rac';
 	}
@@ -357,6 +225,11 @@ PNRStatus.getStatusClass = function(status)
 	{
 		return 'cnf';
 	}
+}
+
+PNRStatus.trackEvent = function(event)
+{
+  chrome.extension.sendRequest({action:'track',event:event});
 }
 
 PNRStatus.init();

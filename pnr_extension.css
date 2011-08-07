@@ -14,7 +14,7 @@ Red shadow - #CC6E76
 
 html
 {
-	height:500px;
+	max-height:500px;
 }
 
 .clrfix
@@ -28,7 +28,7 @@ body
 {
 	font-family:Arial;
 	width:590px;
-	height:450px;
+	max-height:450px;
 	background-image: -webkit-gradient(
 	    linear,
 	    left bottom,
@@ -41,7 +41,7 @@ body
 
 #status-items-block
 {
- height:400px;	
+ max-height:400px;	
  overflow:auto;
 }
 
@@ -213,4 +213,87 @@ body
 	height:10px;
 	width:1px;
 	clear:both;	
+}
+
+
+.ticket-status .chart-status {
+	font-size:11px;
+	padding:9px 0 3px 20px;
+	margin-top:12px;
+}
+
+.ticket-status .chart-status-not-prepared {
+	background:url(chart_not_prepared.png) no-repeat 1px 4px;
+	color:#ccc;
+}
+
+
+.ticket-status .chart-status-prepared {
+	background:url(chart.png) no-repeat 1px 4px;
+	color:#009966;
+}
+
+#edit-block 
+{
+	margin:10px 0 5px 0;
+}
+
+#edit-block #add-pnr
+{
+	display:inline-block;
+	border:1px solid #999;
+	border-radius:14px;
+	height:31px;
+	font-size:16px;
+	width:320px;
+	margin-right:-88px;
+	padding:0 88px 0 10px;
+}
+
+#edit-block #add-block #add-button
+{
+	padding:8px 10px;	
+	background-color:#339966;
+	color:#fff;
+	font-weight:bold;
+	font-size:12px;
+	border:0 none;
+	padding:8px 10px;
+	border-radius:14px;
+}
+
+#edit-block #give-feedback
+{
+	display:block;
+	float:right;
+	background-color:#82A5B7;
+	color:#fff;
+	font-size:10px;
+	font-weight:bold;
+	border-radius:10px;
+	padding:8px 10px;
+	text-decoration:none;
+	cursor:pointer;
+}
+
+.fetching
+{
+  text-align:center;
+  background:#fff url(ajax-loader.gif) no-repeat 260px 30px;
+  width:590px;
+  float:left;
+  padding:10px 0 24px 0;
+	box-shadow: 1px 2px 2px 2px #ebebeb;
+  position:absolute;
+  border-radius:4px;
+}
+
+.fetching-pnr
+{
+	float:right;
+	text-align:center;
+	width:300px;
+	background:#fff url(ajax-loader.gif) no-repeat 128px 15px;
+	font-size:12px;
+	padding-bottom:20px;
 }
