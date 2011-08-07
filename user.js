@@ -1,4 +1,5 @@
 PNRStatus = {};
+PNRStatus.sortInProgress = false;
 (function(){
 PNRStatus.getDateMarkup = function(timestamp)
 {
@@ -19,6 +20,13 @@ PNRStatus.getDate = function(timestamp)
   return [date,month,year];
 }
 
+PNRStatus.setTimedout = function(pnr_num)
+{
+  var node = $('#' + pnr_num);
+  node.find('.fetching-pnr').html(' Indian railways is timing out :( ');
+  node.find('.fetching-pnr').css('background', 'none'); 
+}
+
 PNRStatus.callback = function(data)
 {
   var return_obj = eval('(' + data + ')');
@@ -26,7 +34,16 @@ PNRStatus.callback = function(data)
   {	
     PNRStatus.updateTicketItem(return_obj.data.pnr_number, return_obj.data);
   }
+  else if (return_obj.status == 'INVALID')
+  {
+    PNRStatus.deletePNR(return_obj.data.pnr_number);
+  }
+  else if (return_obj.status == 'TIMEOUT')
+  {
+    PNRStatus.setTimedout(return_obj.data.pnr_number);
+  }
 }
+
 
 PNRStatus.updateTicketItem = function(pnr_num,data,update)
 {
@@ -85,6 +102,35 @@ PNRStatus.updateTicketItem = function(pnr_num,data,update)
       var json = $.toJSON(data);
       localStorage.setItem(pnr_num,json);
     }
+    
+    PNRStatus.sort(pnr_num);
+  }
+}
+
+PNRStatus.sort = function(pnr_num){
+  if(!PNRStatus.sortInProgress) {
+    PNRStatus.sortInProgress = true;
+    var allNodes = $('.status-item');
+    var mytimestamp = $('#' + pnr_num).attr('date');
+    var node_list = [];
+    for(var i=0;i<allNodes.length;i++)
+    {
+      var node_info = {'pnr':$(allNodes[i]).attr('id'), 'date':$(allNodes[i]).attr('date')};
+      node_list.push(node_info);
+    }
+    
+    for(var i=0;i<node_list.length;i++)
+    {
+      var yourtimestamp = node_list[i].date;
+      if(mytimestamp < yourtimestamp)
+      {
+      //  $('#'+pnr_num).insertBefore('#'+node[i].pnr);
+      }
+      //console.log(yourtimestamp + ' vs ' + mytimestamp);
+    }
+    
+    console.log(node_list);
+    PNRStatus.sortInProgress = false;
   }
 }
 
@@ -152,7 +198,7 @@ PNRStatus.setDisplays = function()
 	}
 	$('.ticket-status').hide();
 	$('.date-info').hide();
-	$('.delete').click(PNRStatus.deletePNR);
+	$('.delete').click(PNRStatus.deletePNRCB);
 	
 	for (var i=0;i<PNRStatus.pnrnum.length;i++){
 	  if(localStorage.getItem(PNRStatus.pnrnum[i]))
@@ -167,16 +213,21 @@ PNRStatus.setDisplays = function()
 	})
 }
 
-PNRStatus.deletePNR = function(ev)
+PNRStatus.deletePNRCB = function(ev)
 {
    var pnrnum = this.parentNode.parentNode.id;
-   $('#' + pnrnum).remove();
-   if(PNRStatus.pnrnum.indexOf(pnrnum) >= 0)
-   {
-     PNRStatus.deleteFromLocalStorage(pnrnum);
-   }
-  
-   PNRStatus.trackEvent('deletePNR');
+   PNRStatus.deletePNR(pnrnum);
+}
+
+
+PNRStatus.deletePNR = function(pnrnum){
+ $('#' + pnrnum).remove();
+ if(PNRStatus.pnrnum.indexOf(pnrnum) >= 0)
+ {
+   PNRStatus.deleteFromLocalStorage(pnrnum);
+ }
+
+ PNRStatus.trackEvent('deletePNR');
 }
 
 PNRStatus.deleteFromLocalStorage = function(num)
