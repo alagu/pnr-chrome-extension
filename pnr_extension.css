@@ -79,7 +79,8 @@ body
 	font-weight:bold;
 }
 
-.date-info .year 
+.date-info .year ,
+.date-info .weekday 
 {
 	font-size:12px;
 }

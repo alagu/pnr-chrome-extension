@@ -14,6 +14,9 @@ PNRStatus.ticketMarkup = '\
             <div class="year">\
                 ${year}\
             </div>\
+            <div class="weekday">\
+                ${weekday}\
+            </div>\
         </div>\
         <div class="ticket-status">\
             <div class="delete">x</div>\
@@ -53,11 +56,13 @@ PNRStatus.getDate = function(timestamp)
 {
   var d = new Date(timestamp * 1000);
   var monthList = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dayList   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   var date = d.getDate();
+  var day  = dayList[d.getDay()];
   var month = monthList[d.getMonth()];
   var year = d.getFullYear();
 
-  return [date,month,year];
+  return [date,month,year,day];
 }
 
 PNRStatus.setTimedout = function(pnr_num)
@@ -94,6 +99,7 @@ PNRStatus.updateTicketItem = function(pnr_num,data,update)
     ticketNode.attr('date',data.travel_date.timestamp);
     ticketNode.find('.date').html(date[0] + ' ' + date[1]);
     ticketNode.find('.year').html(date[2]);
+    ticketNode.find('.weekday').html(date[3]);
     ticketNode.find('.ticket-status .start-destination').html(data.board.name + ' - ' + data.alight.name);
     ticketNode.find('.train-name-block  .train-num').html(data.train_number);
     ticketNode.find('.train-name-block .train-name').html(data.train_name);
