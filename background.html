@@ -25,6 +25,13 @@
         pnrnum = pnrnum ? pnrnum.split(',') : [];
         return pnrnum;
     }
+
+
+    function trackEvent(event)
+    {
+        _gaq.push(['_trackEvent', event, 'event']);
+    }
+
     
   function onRequest(request, sender, callback) {
     if (request.action == 'getJSON') {
@@ -68,7 +75,9 @@
  /* Post install stuff */
   function install_notice() {
       if (localStorage.getItem('install_time'))
+      {
           return;
+      }
 
       var now = new Date().getTime();
       localStorage.setItem('install_time', now);

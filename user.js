@@ -302,7 +302,7 @@ PNRStatus.addPNR = function(ev)
  $('#add-pnr').val('');
  
  localStorage['pnrnum'] = PNRStatus.pnrnum.join(',');
- PNRStatus.trackEvent('addPNR');
+ PNRStatus.trackEvent('addPNR_button');
 }
 
 

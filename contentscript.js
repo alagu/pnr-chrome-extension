@@ -55,16 +55,17 @@ var bulkAddClick = function(e)
 	 {
 	    pnrSpanNode = pnrSpanNode[0];
 	    var pnrNumber = parseInt($(pnrSpanNode).html());
-	    addPNR(pnrNumber);
+	    addPNR(pnrNumber, 'addPNR_bulk');
 	 }
  }
 }
 
-var addPNR = function(pnrNumber)
+var addPNR = function(pnrNumber, source)
 {
 	if(Math.floor(pnrNumber/1000000000) > 0)
     {
      chrome.extension.sendRequest({action:'storePNR','pnr_num_store' : pnrNumber}, storePNRResponse);
+     chrome.extension.sendRequest({action:'track',event:'addPNR_IRCTC'});
     }
 }
 
@@ -72,7 +73,7 @@ var ticketConfirmAddPNR = function(ev)
 {
 	var pnr_number = this.parentNode.parentNode.id;
     $(this.parentNode.parentNode).hide();
-    addPNR(pnr_number);
+    addPNR(pnr_number, 'addPNR_IRCTC');
     return false;
 }
 
