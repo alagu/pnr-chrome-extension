@@ -315,6 +315,12 @@ body
 	cursor:pointer;
 }
 
+#edit-block #fb-like
+{
+    display:block;
+	float:right;
+}
+
 .fetching
 {
   text-align:center;
