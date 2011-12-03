@@ -1,0 +1,23 @@
+Changelog
+---------
+
+2011-08-06 v0.6.5
+  * Temporarily remove feedback button, add a fb like button.
+
+2011-08-06 v0.6
+  * Another UI update, thanks to Anu and Briji. Sorted + Chart status.
+
+2011-06-24 v0.5
+  * Tighter integration with IRCTC - add to watchlist after booking ticket. 
+
+2011-06-21 v0.4
+  * UI Update
+
+2011-06-12 v0.3
+  * Support for adding pnr numbers directly from irctc.co.in ticket history page.
+
+2011-06-02 v0.2
+  * Fixed the delete bug
+
+2011-06-01 v0.1
+  * Initial version
