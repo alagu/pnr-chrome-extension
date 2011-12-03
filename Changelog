@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+2011-08-06 v0.6.6
+  * Bug in fb like, putting back feedback
+
 2011-08-06 v0.6.5
   * Temporarily remove feedback button, add a fb like button.
 
