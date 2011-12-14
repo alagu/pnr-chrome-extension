@@ -103,6 +103,11 @@ var Background = {};
             var passengerStatus = data['data']['passenger'][passenger]['status']; 
             status += passengerStatus + ' ';
         }
+        
+        if (data['data']['from']['time'] != '') {
+            status += '. Departs at ' + data['data']['from']['time'];
+        }
+        
         var notification = window.webkitNotifications.createNotification(
           'icon.png',                      // The image.
           'Today: ' + data['data']['from']['name'] + ' to ' + data['data']['to']['name'], // The title.
