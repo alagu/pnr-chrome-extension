@@ -2,6 +2,8 @@
 <html>
 <head>
 <script src="http://code.jquery.com/jquery-1.4.2.js"></script>
+<script src="user.js"></script>
+
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -32,18 +34,21 @@
         _gaq.push(['_trackEvent', event, 'event']);
     }
 
+  function getJSON(url, callback) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", url, true);
+      xhr.onreadystatechange = function() {
+          if (xhr.readyState == 4) {
+              var resp = xhr.responseText;
+              callback(resp);
+          }
+      }
+      xhr.send();  
+  }
     
   function onRequest(request, sender, callback) {
     if (request.action == 'getJSON') {
-      var xhr = new XMLHttpRequest();
-      xhr.open("GET", request.url, true);
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4) {
-          var resp = xhr.responseText;
-          callback(resp);
-        }
-      }
-      xhr.send();
+      getJSON(request.url, callback);
     }
     else if ( request.action == 'storePNR')
     {
@@ -84,6 +89,93 @@
       chrome.tabs.create({url: "installed.html"});
   }
   install_notice();
+  
+var Background = {};
+
+(function(){
+  // If notification is enabled.
+  if (window.webkitNotifications) {
+      
+      
+      Background.show = function(data) {
+        var status = '';
+        for (var passenger in data['data']['passenger']) {
+            var passengerStatus = data['data']['passenger'][passenger]['status']; 
+            status += passengerStatus + ' ';
+        }
+        var notification = window.webkitNotifications.createNotification(
+          'icon.png',                      // The image.
+          'Today: ' + data['data']['from']['name'] + ' to ' + data['data']['to']['name'], // The title.
+          'Status - ' + status       // The body.
+        );
+        
+        notification.show();
+
+        setTimeout(function() {
+            notification.cancel();
+        }, 20000);
+      }
+
+
+      Background.refreshTicket = function(pnr, data) {
+          if(data){
+              if(data.hasOwnProperty('data')) //Ticket data already exists.
+              {
+                  PNRStatus.todayTickets[pnr] = data;
+                  Background.show(data);
+              }
+          }
+          else
+          {
+             PNRStatus.getPNRStatus(pnr,function(new_data){ Background.refreshTicket(pnr, $.parseJSON(new_data)); }) 
+          }
+      }
+      
+      Background.refreshTodayTickets = function() {
+          for (var pnrnum in PNRStatus.todayTickets) {
+              Background.refreshTicket(pnrnum);
+          }
+      }
+
+
+      Background.updateTodayTickets = function(force)
+      {
+          /* Last tickets updated */
+
+          var lastTodayTicketCheck                       = localStorage.getItem('lastTodayTicketCheck');
+          if(!lastTodayTicketCheck) lastTodayTicketCheck = 0;
+          var currentTime                                = (new Date().getTime())/1000;
+          var currentDate                                = (new Date());
+
+          if(currentTime - lastTodayTicketCheck > 43200 || force) //Half a day
+          {  
+              var today = currentDate.getDate() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getFullYear();
+
+              /* Pick all the tickets for today and push it to localStorage. Cache the results. */
+              var callback = function(data) {
+                  var json = $.parseJSON(data);
+                  console.log(json);
+                  if(json.hasOwnProperty('data') && json['data'].hasOwnProperty('travel_date')) {
+
+                      var ticketDate = (json['data']['travel_date']['date']);
+                      if (ticketDate == today) {
+                          PNRStatus.todayTickets[json['data']['pnr_number']] = {};
+                          Background.refreshTicket(json['data']['pnr_number'],json);
+                      }
+                  }
+              }
+              
+              PNRStatus.populatePNR();
+              PNRStatus.fetchAll(callback); 
+          }
+      }  
+    
+    Background.updateTodayTickets();
+    
+    setInterval(Background.updateTodayTickets,6*3600*1000);//Update today's tickets every 12 hours. 
+    setInterval(Background.refreshTodayTickets, 60*1000);
+  }
+})();
 
 </script>
 

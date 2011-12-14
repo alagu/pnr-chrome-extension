@@ -191,18 +191,25 @@ PNRStatus.sort = function(pnr_num){
   }
 }
 
-PNRStatus.getPNRStatus = function(pnrInteger)
+PNRStatus.getPNRStatus = function(pnrInteger, callback)
 {
   var url = 'http://pnrapi.alagu.net/api/v1.0/pnr/' + pnrInteger;// + '?jsonp=pnrInteger';
   var chrome_getJSON = function(url, callback) {
         chrome.extension.sendRequest({action:'getJSON',url:url}, callback);
   }
-  chrome_getJSON(url, PNRStatus.callback);
+  if(!callback) callback = PNRStatus.callback;
+  
+  if(typeof getJSON != 'undefined') {
+      getJSON(url, callback);
+  } else {
+      chrome_getJSON(url, callback);
+  }
 }
 
+/* Popup intializer */
 PNRStatus.init = function(){
-  $('#add-button').click(PNRStatus.addPNR);
-  PNRStatus.populatePNR();
+  $('#add-button').click(PNRStatus.addPNR); //Add click handler for pnr status
+  PNRStatus.populatePNR(); //Set all the pnr numbers in localStorage to PNRStatus object
   PNRStatus.setDisplays();
   PNRStatus.fetchAll();
 }
@@ -330,6 +337,7 @@ PNRStatus.resetAddPNRAfter  = function(time)
 }
 
 PNRStatus.pnrnum = [];
+PNRStatus.todayTickets = {};
 
 PNRStatus.populatePNR = function()
 {
@@ -344,12 +352,11 @@ PNRStatus.populatePNR = function()
   }
 }
 
-
-PNRStatus.fetchAll = function()
+PNRStatus.fetchAll = function(callback)
 {
   for(var i=0;i<PNRStatus.pnrnum.length;i++)
   {
-    PNRStatus.getPNRStatus(PNRStatus.pnrnum[i]);
+    PNRStatus.getPNRStatus(PNRStatus.pnrnum[i],callback);
   }
 }
 
@@ -376,6 +383,4 @@ PNRStatus.trackEvent = function(event)
 {
   chrome.extension.sendRequest({action:'track',event:event});
 }
-
-PNRStatus.init();
 })();
