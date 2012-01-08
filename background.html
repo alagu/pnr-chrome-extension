@@ -124,7 +124,7 @@ var Background = {};
 
       Background.refreshTicket = function(pnr, data) {
           if(data){
-              if(data.hasOwnProperty('data')) //Ticket data already exists.
+              if(data.hasOwnProperty('data') && data.data.hasOwnProperty('passenger')) //Ticket data already exists.
               {
                   PNRStatus.todayTickets[pnr] = data;
                   Background.show(data);
@@ -136,34 +136,37 @@ var Background = {};
           }
       }
       
-      Background.refreshTodayTickets = function() {
+      Background.refreshNotifyTickets = function() {
           for (var pnrnum in PNRStatus.todayTickets) {
               Background.refreshTicket(pnrnum);
           }
       }
 
 
-      Background.updateTodayTickets = function(force)
+      Background.updateNotifyTickets = function(force)
       {
           /* Last tickets updated */
 
-          var lastTodayTicketCheck                       = localStorage.getItem('lastTodayTicketCheck');
-          if(!lastTodayTicketCheck) lastTodayTicketCheck = 0;
+          var lastNotifyTicketCheck                       = localStorage.getItem('lastNotifyTicketCheck');
+          if(!lastNotifyTicketCheck) lastNotifyTicketCheck = 0;
           var currentTime                                = (new Date().getTime())/1000;
           var currentDate                                = (new Date());
+          var tomorrowDate                               = (new Date());
+          tomorrowDate.setTime(currentDate.getTime() + 86400000);
 
-          if(currentTime - lastTodayTicketCheck > 43200 || force) //Half a day
+          if(currentTime - lastNotifyTicketCheck > 43200 || force) //Half a day
           {  
-              var today = currentDate.getDate() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getFullYear();
-
-              /* Pick all the tickets for today and push it to localStorage. Cache the results. */
+              var today    = currentDate.getDate() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getFullYear();
+              var tomorrow = tomorrowDate.getDate() + "-" + (tomorrowDate.getMonth() + 1) + "-" + tomorrowDate.getFullYear();
+              
+              /* Pick all the tickets for today, tomorrow and push it to localStorage. Cache the results. */
               var callback = function(data) {
                   var json = $.parseJSON(data);
-                  console.log(json);
                   if(json.hasOwnProperty('data') && json['data'].hasOwnProperty('travel_date')) {
 
                       var ticketDate = (json['data']['travel_date']['date']);
-                      if (ticketDate == today) {
+                      console.log(ticketDate + ":" + today + ":" + tomorrow);
+                      if (ticketDate == today || ticketDate == tomorrow) {
                           PNRStatus.todayTickets[json['data']['pnr_number']] = {};
                           Background.refreshTicket(json['data']['pnr_number'],json);
                       }
@@ -175,10 +178,12 @@ var Background = {};
           }
       }  
     
-    Background.updateTodayTickets();
+    Background.updateNotifyTickets();
     
-    setInterval(Background.updateTodayTickets,6*3600*1000);//Update today's tickets every 12 hours. 
-    setInterval(Background.refreshTodayTickets, 60*1000);
+    TODAY_TICKETS = 6*3600*1000;
+    TODAY_TICKETS = 5000;
+//    setInterval(Background.updateNotifyTickets, TODAY_TICKETS);//Update today's tickets every 12 hours. 
+//    setInterval(Background.refreshNotifyTickets, 60*1000);
   }
 })();
 
