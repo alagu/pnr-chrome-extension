@@ -174,7 +174,7 @@ body
 	font-size:17px;
 }
 
-.ticket-status .ticket-items ul li.cnf
+.ticket-status .ticket-items ul li.green
 {
 	background-image: -webkit-gradient(
 	    linear,
@@ -185,7 +185,7 @@ body
 	);
 }	
 
-.ticket-status .ticket-items ul li.rac
+.ticket-status .ticket-items ul li.orange
 {
 	background-image: -webkit-gradient(
 	    linear,
@@ -196,7 +196,25 @@ body
 	);
 }
 
-.ticket-status .ticket-items ul li.wl
+.ticket-status .ticket-items ul li.grey
+{
+	color:#000;
+	background-image: -webkit-gradient(
+	    linear,
+	    left bottom,
+	    left top,
+	    color-stop(0.05, #555),
+	    color-stop(0.95, #eee)
+	);
+}
+
+.ticket-status .ticket-items ul li.grey .ticket-status-num
+{
+    margin-top:5px;
+    font-size:65%;
+}
+
+.ticket-status .ticket-items ul li.red
 {
 	
 	background-image: -webkit-gradient(

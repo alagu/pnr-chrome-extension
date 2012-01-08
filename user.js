@@ -112,28 +112,11 @@ PNRStatus.updateTicketItem = function(pnr_num,data,update)
       ticketNode.find('.fetching-pnr').hide();
       for(var i=0;i<data.passenger.length;i++)
       {
-        var status = data.passenger[i];
-        var css    = PNRStatus.getStatusClass(status);
-        var number = '?';
-        var text   = 'WL';
-        if (css == 'wl'){
-          number = status.status.match(/(\d+)/)[0];
-          text   = 'WL';
-        }
-        else if (css == 'rac'){
-          text   = 'RAC';
-          number = status.status.match(/(\d+)/)[0]
-        }
-        else 
-        {
-          var splits = status.seat_number.split(',')
-          number = splits[1];
-          text   = splits[0];
-        }
-        
+        var passenger = data.passenger[i];
+        var parsedData = PNRStatus.parseStatus(data.passenger[i]);
         
         var markup = '<li class="${css}"><div class="ticket-status-text">${status}</div><div class="ticket-status-num">${number}</div></li>';
-        var node   = $.tmpl(markup,{'css':css,'status':text,'number':number});
+        var node   = $.tmpl(markup,{'css':parsedData['color'],'status':parsedData['state'],'number':parsedData['number']});
         ticketNode.find('.ticket-item-list').append(node);
       }
       
@@ -377,6 +360,88 @@ PNRStatus.getStatusClass = function(status)
 	{
 		return 'cnf';
 	}
+}
+
+
+PNRStatus.parseStatus = function(passenger)
+{   
+    var isRAC = function(text)
+    {
+        return text.toLowerCase().indexOf('rac') >= 0;
+    }
+
+    var isWL = function(text)
+    {
+        return (text.toLowerCase().indexOf('w/l') >= 0) || (text.toLowerCase().indexOf('wl') >= 0);
+    }
+
+    state  = ''
+    color = 'unknown'
+    if (passenger['status'] == 'CNF') {
+        splits = passenger['seat_number'].split(',');
+
+        state  = splits[0].replace(' ','');
+        number = splits[1].replace(' ','');
+        color = 'green';
+    } 
+    else if (isRAC(passenger['status']) && isRAC(passenger['seat_number']))
+    {
+        text = passenger['status'];
+        
+        state  = 'RAC';
+        number = text.match(/(\d+)/)[0];
+        color  = 'orange';
+    }
+    else if (passenger['status'] == 'Confirmed')
+    {
+        state  = 'CNF';
+        number = ''
+        color  = 'green';
+    }
+    else if (passenger['status'] == 'Can/Mod')
+    {
+        state  = 'CAN';
+        number = 'Cancelled';
+        color  = 'grey';
+    }
+    else if (isWL(passenger['status']) && isWL(passenger['seat_number']))
+    {
+        text = passenger['status'];
+        
+        state  = 'WL';
+        number = text.match(/(\d+)/)[0]; 
+        color  = 'red';
+    }
+    else if (isWL(passenger['seat_number']) && isRAC(passenger['status']))
+    {
+        text  = passenger['status'];
+        
+        state  = 'RAC';
+        number = text.match(/(\d+)/)[0];
+        color  = 'orange';
+    }
+    else if ((!isWL(passenger['seat_number']) && !isRAC(passenger['seat_number']))
+             && passenger['seat_number'].indexOf(passenger['status']) == 0)
+    {
+        
+        splits = passenger['status'].split(',');
+
+        state  = splits[0].replace(' ','');
+        number = splits[1].replace(' ','');
+        color = 'green';
+    }
+    else 
+    {
+        status = passenger['status'].replace(',','');
+        splits = status.split(' ');
+        state  = splits[0];
+        number = (splits[1] == '') ? splits[2] : splits[1];
+        
+        color = 'green';        
+    }
+    
+    return {'color':color, 'state':state, 'number':number};
+    
 }
 
 PNRStatus.trackEvent = function(event)
