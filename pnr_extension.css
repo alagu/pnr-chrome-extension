@@ -101,7 +101,8 @@ body
 	text-transform:uppercase;
 }
 
-.ticket-status .pnr-num
+.ticket-status .pnr-num,
+.invalid .pnr-num
 {
 	color:#666666;
 	font-size:11px;
@@ -339,16 +340,22 @@ body
 	float:right;
 }
 
-.fetching
+.fetching,.invalid
 {
   text-align:center;
-  background:#fff url(ajax-loader.gif) no-repeat 260px 30px;
-  width:578px;
+  width:586px;
   float:left;
   padding:10px 0 24px 0;
-	box-shadow: 1px 2px 2px 2px #ebebeb;
+  box-shadow: 1px 2px 2px 2px #ebebeb;
   border-radius:4px;
   margin:0 auto;
+}
+
+.invalid {
+	background-color:white;
+}
+.fetching {
+    background:#fff url(ajax-loader.gif) no-repeat 260px 30px;
 }
 
 .fetching-pnr
@@ -373,4 +380,13 @@ body
   top:-1px;
   font-weight:bold;
   cursor:pointer;
+}
+
+.invalid .delete {
+	display:block;
+	position:auto;
+	float:none;
+	width:80px;
+	margin:0 auto;
+	margin-top:10px;
 }
