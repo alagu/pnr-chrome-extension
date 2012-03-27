@@ -82,12 +82,30 @@ PNRStatus.callback = function(data)
   {	
     PNRStatus.updateTicketItem(return_obj.data.pnr_number, return_obj.data);
   }
+  else if (return_obj.status == 'INVALID')
+  {
+	PNRStatus.setInvalid(return_obj.data.pnr_number);
+  }
   else if (return_obj.status == 'TIMEOUT')
   {
     PNRStatus.setTimedout(return_obj.data.pnr_number);
   }
 }
 
+PNRStatus.setInvalid = function(pnr_num) {
+	var ticketNode = $('#' + pnr_num) 
+	if (ticketNode)
+	{
+		var markup = '<div class="invalid"> \
+						<div>Problem fetching data for PNR ${pnr_num}</div> \
+						<div class="delete">Remove?</div>\
+					  </div><div style="clear:both;"></div>';
+		var node   = $.tmpl(markup, {'pnr_num':pnr_num});
+		ticketNode.html('');
+		ticketNode.append(node);
+		$('.invalid .delete').click(PNRStatus.deletePNRCB);
+	}
+}
 
 PNRStatus.updateTicketItem = function(pnr_num,data,update)
 {
