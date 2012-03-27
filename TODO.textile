@@ -1,23 +1,25 @@
-TODO
-P1
-- Add option to post for prediction analysis in indiarailinfo.com (not sure if the site owner would like it)
-- Put the departure time of the train
+h1 TODO
+h2 P1
+ *  Notification for trains
+    *
+ *  Add option to post for prediction analysis in indiarailinfo.com (not sure if the site owner would like it)
+ *  Put the departure time of the train
 
-P2
-- Show the seat position(Mod 8.only for S1,B1)
-- Show full detail instead of abbrevated form (i.e. Instead CNF S3,51,GN showing as Confirmed, S3,54,General & Seat position(like Upper))
-- Print ticket directly from the extension
-- Use trainenquiry.com to predict arrival time if journey is currently on. (via @logic)
+h2 P2
+ * Show the seat position(Mod 8.only for S1,B1)
+ * Show full detail instead of abbrevated form (i.e. Instead CNF S3,51,GN showing as Confirmed, S3,54,General & Seat position(like Upper))
+ * Print ticket directly from the extension
+ * Use trainenquiry.com to predict arrival time if journey is currently on. (via @logic)
 
 
 
-DONE
-- Sort the pnr status by date of travel(ascending) - 6 Aug
-- Show starting and end destination - 6 Aug
-- Rework on the UI for better usability and show the information mentioned above in best way. Thanks to Anu and Briji! - 5 Aug
-- Change UI (current UI sucks) - 21 June
-- Add help page after install
-- Tighter integration with IRCTC - added to post-ticket-book page.
+h1 DONE
+ * Sort the pnr status by date of travel(ascending) - 6 Aug
+ * Show starting and end destination - 6 Aug
+ * Rework on the UI for better usability and show the information mentioned above in best way. Thanks to Anu and Briji! - 5 Aug
+ * Change UI (current UI sucks) - 21 June
+ * Add help page after install
+ * Tighter integration with IRCTC - added to post-ticket-book page.
 
-SKIPPED
+h1 SKIPPED
 - Add hooks in cleartrip as well - I guess few people use cleartrip for trains, will do it if someone needs it.
