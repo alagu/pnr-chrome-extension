@@ -2,6 +2,7 @@
 <html>
 <head>
 <script src="http://code.jquery.com/jquery-1.4.2.js"></script>
+<script src="json2.min.js"></script>
 <script src="user.js"></script>
 
 <script type="text/javascript">
@@ -19,6 +20,8 @@
 </script>
 <script>
 
+    TIME_ONEHOUR = 3600;
+    TIME_INFINITY = 365*86400;
     /* Get stored PNR*/
     function getStoredPNR()
     {
@@ -94,24 +97,36 @@ var Background = {};
 
 (function(){
   // If notification is enabled.
+ /* What to notify:
+  * 
+  * (Travel date < 7 days)  and (Ticket last shown > 1 day)
+  * (Travel date < 2 days)  and (Ticket last shown > 6 hours)
+  * (Travel date < 1 day)   and (Ticket last shown > 2 hours)
+  * (Travel date < 6 hours) and (Ticket last shown > 30 minutes)
+  */
   if (window.webkitNotifications) {
       
+      Background.getDateString = function(timestamp) {
+          var timeTuple = PNRStatus.getDate(timestamp);
+          return timeTuple[0] + " " + timeTuple[1];
+      }
       
-      Background.show = function(data) {
+      Background.showPopup = function(data) {
         var status = '';
         for (var passenger in data['data']['passenger']) {
             var passengerStatus = data['data']['passenger'][passenger]['status']; 
             status += passengerStatus + ' ';
         }
         
+        
         if (data['data']['from']['time'] != '') {
             status += '. Departs at ' + data['data']['from']['time'];
         }
         
         var notification = window.webkitNotifications.createNotification(
-          'icon.png',                      // The image.
-          'Today: ' + data['data']['from']['name'] + ' to ' + data['data']['to']['name'], // The title.
-          'Status - ' + status       // The body.
+          'icon.png',  
+          Background.getDateString(data['data']['travel_date']['timestamp']) + ': ' + data['data']['from']['name'] + ' to ' + data['data']['to']['name'], // The title.
+          'Status - ' + status 
         );
         
         notification.show();
@@ -120,70 +135,83 @@ var Background = {};
             notification.cancel();
         }, 20000);
       }
+	  
+	  /* Stores PNR, and calls refresh again. */
+	  Background.storeAndMonitorPNR = function(pnr, pnr_data) {
+		   console.log("Fetched pnr" + pnr)
+		   pnr_data['updateTime'] = (new Date()).getTime();
+		   localStorage.setItem(Background.cacheKey(pnr), JSON.stringify(pnr_data));
+		   Background.monitorTicket(pnr);
+	  }
+      
+      Background.cacheKey = function(pnr) {
+          return pnr + "-cached"
+      }
 
-
-      Background.refreshTicket = function(pnr, data) {
-          if(data){
-              if(data.hasOwnProperty('data') && data.data.hasOwnProperty('passenger')) //Ticket data already exists.
-              {
-                  PNRStatus.todayTickets[pnr] = data;
-                  Background.show(data);
-              }
+	  /* Gets the cached PNR status, or returns null */
+	  Background.getCachedPNRStatus = function(pnr) {
+		  if (localStorage.getItem(Background.cacheKey(pnr))) {
+			  data = $.parseJSON(localStorage.getItem(Background.cacheKey(pnr)));
+              return data;
+		  } else {
+              PNRStatus.getPNRStatus(pnr,function(pnr_data){ Background.storeAndMonitorPNR(pnr, $.parseJSON(pnr_data));}) 
+			  return null;
+		  }
+	  }
+      
+      /* Updates next popup time for cached data */
+      Background.updateNextPopupTime = function(pnr_data) {
+ /*         var currentTimestamp = (new Date()).getTime();
+          var travelTimestamp  = pnr_data['travel_date']['timestamp'] * 1000;
+          
+          return 0;*/
+      }
+      
+      /* Returns the time when next popup should be shown */
+      Background.nextPopupTime = function(pnr) {
+          var nextpp = localStorage.getItem(pnr + '-next-pp');
+          if (nextpp == null) {
+              return 0;
           }
-          else
-          {
-             PNRStatus.getPNRStatus(pnr,function(new_data){ Background.refreshTicket(pnr, $.parseJSON(new_data)); }) 
+          else if (nextpp == "-1") {
+              return -1;
+          }
+          else {
+              return Number(j);
+          }
+      }
+
+      Background.monitorTicket = function(pnr) {
+		  /*
+          - Try to fetch data from localStore.
+		  - If not, populate the data and save it in localStore
+		  - See travel_date, ticket_status and last_shown
+		  - If it fits above conditions, then show popup.
+		  */
+		  var cached_data = Background.getCachedPNRStatus(pnr);
+		  if(!cached_data) {
+              return;
+		  }
+          
+          if(cached_data.hasOwnProperty('data') && cached_data.data.hasOwnProperty('travel_date') ){
+              var ticketDate      = cached_data.data.travel_date.date;
+              var nextPopupTime   = Background.nextPopupTime(pnr);
+              if ((new Date()).getTime() > nextPopupTime and nextPopupTime != -1) {
+                  Background.showPopup(cached_data);
+                  Background.updateNextPopupTime(cached_data);
+              }
+          } 
+      }
+	  
+      
+      Background.monitorAllTickets = function() {
+		  PNRStatus.populatePNR();
+          for (var i=0; i< PNRStatus.pnrnum.length; i++) {
+              Background.monitorTicket(PNRStatus.pnrnum[i]);
           }
       }
       
-      Background.refreshNotifyTickets = function() {
-          for (var pnrnum in PNRStatus.todayTickets) {
-              Background.refreshTicket(pnrnum);
-          }
-      }
-
-
-      Background.updateNotifyTickets = function(force)
-      {
-          /* Last tickets updated */
-
-          var lastNotifyTicketCheck                       = localStorage.getItem('lastNotifyTicketCheck');
-          if(!lastNotifyTicketCheck) lastNotifyTicketCheck = 0;
-          var currentTime                                = (new Date().getTime())/1000;
-          var currentDate                                = (new Date());
-          var tomorrowDate                               = (new Date());
-          tomorrowDate.setTime(currentDate.getTime() + 86400000);
-
-          if(currentTime - lastNotifyTicketCheck > 43200 || force) //Half a day
-          {  
-              var today    = currentDate.getDate() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getFullYear();
-              var tomorrow = tomorrowDate.getDate() + "-" + (tomorrowDate.getMonth() + 1) + "-" + tomorrowDate.getFullYear();
-              
-              /* Pick all the tickets for today, tomorrow and push it to localStorage. Cache the results. */
-              var callback = function(data) {
-                  var json = $.parseJSON(data);
-                  if(json.hasOwnProperty('data') && json['data'].hasOwnProperty('travel_date')) {
-
-                      var ticketDate = (json['data']['travel_date']['date']);
-                      console.log(ticketDate + ":" + today + ":" + tomorrow);
-                      if (ticketDate == today || ticketDate == tomorrow) {
-                          PNRStatus.todayTickets[json['data']['pnr_number']] = {};
-                          Background.refreshTicket(json['data']['pnr_number'],json);
-                      }
-                  }
-              }
-              
-              PNRStatus.populatePNR();
-              PNRStatus.fetchAll(callback); 
-          }
-      }  
-    
-    Background.updateNotifyTickets();
-    
-    TODAY_TICKETS = 6*3600*1000;
-    TODAY_TICKETS = 5000;
-//    setInterval(Background.updateNotifyTickets, TODAY_TICKETS);//Update today's tickets every 12 hours. 
-//    setInterval(Background.refreshNotifyTickets, 60*1000);
+      setInterval(Background.monitorAllTickets, 60000);
   }
 })();
 
