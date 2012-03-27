@@ -121,6 +121,10 @@ if (window.webkitNotifications) {
       
 	Background.showPopup = function(data) {
 		var status = '';
+		if (!data.hasOwnProperty('data') || !data['data'].hasOwnProperty('from'))
+		{
+			return;
+		}
 		for (var passenger in data['data']['passenger']) {
 			var passengerStatus = data['data']['passenger'][passenger]['status']; 
 			status += passengerStatus + ' ';
