@@ -43,7 +43,10 @@ PNRStatus.ticketMarkup = '\
         </div>\
     </div>\
 	 ';  
-  
+	 
+/* 
+ * Gets current date as markup
+ */
 PNRStatus.getDateMarkup = function(timestamp)
 {
 	var dateTuple = PNRStatus.getDate(timestamp);
@@ -78,10 +81,6 @@ PNRStatus.callback = function(data)
   if(return_obj.status == 'OK')
   {	
     PNRStatus.updateTicketItem(return_obj.data.pnr_number, return_obj.data);
-  }
-  else if (return_obj.status == 'INVALID')
-  {
-    PNRStatus.deletePNR(return_obj.data.pnr_number);
   }
   else if (return_obj.status == 'TIMEOUT')
   {
@@ -227,7 +226,6 @@ PNRStatus.deletePNRCB = function(ev)
    PNRStatus.deletePNR(pnrnum);
 }
 
-
 PNRStatus.deletePNR = function(pnrnum){
  $('#' + pnrnum).remove();
  if(PNRStatus.pnrnum.indexOf(pnrnum) >= 0)
@@ -236,6 +234,23 @@ PNRStatus.deletePNR = function(pnrnum){
  }
 
  PNRStatus.trackEvent('deletePNR');
+}
+
+/* Add a ticket to history of tickets */
+PNRStatus.addToHistory = function(pnrnum) {
+	PNRStatus.deleteFromLocalStorage(pnrnum)
+    var pnrHistory = localStorage['pnrhistory'];
+    if(!pnrHistory || pnrHistory.length == 0)
+    {
+      var history = [];
+    }
+    else
+    {
+      var history = pnrHistory.split(',');
+    }
+	
+	history.push(pnrnum)
+	localStorage['pnrhistory'] = history.join(',')
 }
 
 PNRStatus.deleteFromLocalStorage = function(num)
@@ -375,11 +390,13 @@ PNRStatus.parseStatus = function(passenger)
         return (text.toLowerCase().indexOf('w/l') >= 0) || (text.toLowerCase().indexOf('wl') >= 0);
     }
 
-    state  = ''
+    state  = '';
+    stateCode  = '';
     color = 'unknown'
     if (passenger['status'] == 'CNF') {
         splits = passenger['seat_number'].split(',');
 
+        stateCode = 'CNF';
         state  = splits[0].replace(' ','');
         number = splits[1].replace(' ','');
         color = 'green';
@@ -388,19 +405,19 @@ PNRStatus.parseStatus = function(passenger)
     {
         text = passenger['status'];
         
-        state  = 'RAC';
+        state = stateCode = 'RAC';
         number = text.match(/(\d+)/)[0];
         color  = 'orange';
     }
     else if (passenger['status'] == 'Confirmed')
-    {
-        state  = 'CNF';
+    {        
+        state  = stateCode =  'CNF';
         number = ''
         color  = 'green';
     }
     else if (passenger['status'] == 'Can/Mod')
     {
-        state  = 'CAN';
+        state  = stateCode =   'CAN';
         number = 'Cancelled';
         color  = 'grey';
     }
@@ -408,7 +425,7 @@ PNRStatus.parseStatus = function(passenger)
     {
         text = passenger['status'];
         
-        state  = 'WL';
+        state  = stateCode = 'WL';
         number = text.match(/(\d+)/)[0]; 
         color  = 'red';
     }
@@ -416,7 +433,7 @@ PNRStatus.parseStatus = function(passenger)
     {
         text  = passenger['status'];
         
-        state  = 'RAC';
+        state  = stateCode = 'RAC';
         number = text.match(/(\d+)/)[0];
         color  = 'orange';
     }
@@ -425,7 +442,7 @@ PNRStatus.parseStatus = function(passenger)
     {
         
         splits = passenger['status'].split(',');
-
+        stateCode = 'CNF';
         state  = splits[0].replace(' ','');
         number = splits[1].replace(' ','');
         color = 'green';
@@ -437,10 +454,11 @@ PNRStatus.parseStatus = function(passenger)
         state  = splits[0];
         number = (splits[1] == '') ? splits[2] : splits[1];
         
-        color = 'green';        
+        color = 'green';  
+        stateCode = 'CNF';      
     }
     
-    return {'color':color, 'state':state, 'number':number};
+    return {'color':color, 'state':state, 'number':number, 'stateCode' : stateCode};
     
 }
 
