@@ -209,9 +209,6 @@ if (window.webkitNotifications) {
 			nextPopupTime = currentTimestamp + Background.timeInDays(15);              
 		}	  
 		
-		nextPopupTime = currentTimestamp + Background.timeInMins(3);              
-		
-          
 		localStorage.setItem(pnr_data['data']['pnr_number'] + '-next-pp', nextPopupTime);
           
 		return 0;
