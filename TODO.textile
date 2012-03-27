@@ -1,7 +1,5 @@
 h1 TODO
 h2 P1
- *  Notification for trains
-    *
  *  Add option to post for prediction analysis in indiarailinfo.com (not sure if the site owner would like it)
  *  Put the departure time of the train
 
@@ -14,6 +12,7 @@ h2 P2
 
 
 h1 DONE
+ *  Notification for trains - 27 March
  * Sort the pnr status by date of travel(ascending) - 6 Aug
  * Show starting and end destination - 6 Aug
  * Rework on the UI for better usability and show the information mentioned above in best way. Thanks to Anu and Briji! - 5 Aug
