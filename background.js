@@ -141,6 +141,7 @@ if (window.webkitNotifications) {
 		);
         
 		notification.show();
+		trackEvent('showpopup');
 
 		setTimeout(function() {
 			notification.cancel();
