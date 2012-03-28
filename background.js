@@ -210,7 +210,7 @@ if (window.webkitNotifications) {
 			nextPopupTime = currentTimestamp + Background.timeInDays(1);
 		}
 		else {
-			nextPopupTime = currentTimestamp + Background.timeInDays(15);              
+			nextPopupTime = currentTimestamp + difference - Background.timeInDays(6);              
 		}	  
 		
 		localStorage.setItem(pnr_data['data']['pnr_number'] + '-next-pp', nextPopupTime);
