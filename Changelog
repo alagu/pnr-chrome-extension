@@ -1,5 +1,8 @@
 Changelog
 ---------
+2012-03-28 v0.9
+  * New feature: Notifications, notifies you about your travel ticket.
+  * Bug fixes for missing PNR items.
 
 2012-01-08 v0.8
   * Fix major bug for showing status item
