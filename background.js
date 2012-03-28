@@ -131,12 +131,12 @@ if (window.webkitNotifications) {
 		}
         
 		if (data['data']['from']['time'] != '') {
-			status += '. Departs at ' + data['data']['from']['time'];
+			status += '. Departs at ' + data['data']['board']['time'];
 		}
         
 		var notification = window.webkitNotifications.createNotification(
 			'icon.png',  
-			Background.getDateString(data['data']['travel_date']['timestamp']) + ': ' + data['data']['from']['name'] + ' to ' + data['data']['to']['name'], // The title.
+			Background.getDateString(data['data']['board']['timestamp']) + ': ' + data['data']['board']['name'] + ' to ' + data['data']['alight']['name'], // The title.
 			'Status - ' + status 
 		);
         
@@ -183,7 +183,7 @@ if (window.webkitNotifications) {
 	*/   
 	Background.updateNextPopupTime = function(pnr_data) {
 		var currentTimestamp = (new Date()).getTime();
-		var travelTimestamp  = pnr_data['data']['travel_date']['timestamp'] * 1000;
+		var travelTimestamp  = pnr_data['data']['board']['timestamp'] * 1000;
 		var difference       = travelTimestamp - currentTimestamp;
 		var nextPopupTime    = 0;
 		if (difference < 0 )
@@ -251,7 +251,6 @@ if (window.webkitNotifications) {
 		}
           
 		if(cached_data.hasOwnProperty('data') && cached_data.data.hasOwnProperty('travel_date') ){
-			var ticketDate      = cached_data.data.travel_date.date;
 			var nextPopupTime   = Background.nextPopupTime(pnr);
 			if ((new Date()).getTime() > nextPopupTime && nextPopupTime != -1) {
 				PNRStatus.getPNRStatus(cached_data['data']['pnr_number'],

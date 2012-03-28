@@ -36,6 +36,7 @@ PNRStatus.ticketMarkup = '\
                 </ul>\
                 <div class="train-name-block">\
                     <div class="train-num">${train_num}</div> <div class="train-name">${train_name}</div>\
+					<div class="train-time">${train_time}</div>\
 					          <div class="chart-status chart-status-not-prepared"><span class="chart-status-text">Chart not prepared</span></div>\
                 </div>\
                 <div style="clear:both;"></div>\
@@ -112,14 +113,15 @@ PNRStatus.updateTicketItem = function(pnr_num,data,update)
   if(data) {
     
     var ticketNode = $('#' + pnr_num);
-    var date = PNRStatus.getDate(data.travel_date.timestamp);
-    ticketNode.attr('date',data.travel_date.timestamp);
+    var date = PNRStatus.getDate(data.board.timestamp);
+    ticketNode.attr('date',data.board.timestamp);
     ticketNode.find('.date').html(date[0] + ' ' + date[1]);
     ticketNode.find('.year').html(date[2]);
     ticketNode.find('.weekday').html(date[3]);
     ticketNode.find('.ticket-status .start-destination').html(data.board.name + ' - ' + data.alight.name);
     ticketNode.find('.train-name-block  .train-num').html(data.train_number);
     ticketNode.find('.train-name-block .train-name').html(data.train_name);
+    ticketNode.find('.train-name-block .train-time').html("Departs at " + data.board.time);
     ticketNode.find('.fetching').hide();
     ticketNode.find('.ticket-status').show();
     ticketNode.find('.date-info').show();

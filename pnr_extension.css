@@ -126,10 +126,17 @@ body
 .ticket-status .ticket-items .train-name-block .train-name
 {
 	font-size:10px;
-	font-weight:bold;
 	text-transform:uppercase;
+	font-weight:bold;
 	padding-left:44px;
 	padding-top:1px;
+}
+
+.ticket-status .ticket-items .train-name-block .train-time
+{
+	font-size: 10px;
+    font-weight: bold;
+    margin-top: 6px;
 }
 
 .ticket-status .ticket-items .train-name-block
@@ -239,7 +246,7 @@ body
 .ticket-status .chart-status {
 	font-size:11px;
 	padding:9px 0 3px 20px;
-	margin-top:12px;
+	margin-top:8px;
 }
 
 .ticket-status .chart-status-not-prepared {
