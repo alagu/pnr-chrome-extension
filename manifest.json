@@ -21,7 +21,7 @@
    "content_scripts": [
    {
      "matches": ["https://www.irctc.co.in/*"],
-     "js" : ["jquery.js","contentscript.js"]
+     "js" : ["assets/js/jquery.min.js","assets/js/contentscript.js"]
    }
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://ajax.googleapis.com https://ssl.google-analytics.com; object-src 'self'"
