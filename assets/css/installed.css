@@ -1,0 +1,36 @@
+@font-face {
+  font-family: 'Copse';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Copse'), url(/assets/fonts/Copse.woff) format('woff');
+}
+
+body {
+  font-family: 'Copse', arial, serif;
+}
+#container {
+    margin: 0 auto;
+}
+
+h1 {
+  text-align:center;
+}
+
+h1 img {
+  width:45px;
+  height:45px;
+  margin-right:5px;
+  vertical-align:bottom;
+}
+
+/* Always be sure to give your carousel items a width and a height */
+.yui-carousel-element li {
+    width:900px;
+    height:500px;
+    opacity: 0.6;
+    opacity: 0.6;
+}
+
+.yui-carousel-element .yui-carousel-item-selected {
+    opacity: 1;
+}
