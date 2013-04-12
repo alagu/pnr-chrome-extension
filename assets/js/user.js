@@ -2,48 +2,50 @@ PNRStatus = {};
 PNRStatus.sortInProgress = false;
 (function(){
 
-PNRStatus.ticketMarkup = '\
-	<div class="status-item" id="${pnr_num}">\
-	      <div class="fetching">\
-	           Fetching status for PNR ${pnr_num}\
-	      </div>\
-        <div class="date-info">\
-            <div class="date">\
-                ${date} \
-            </div>\
-            <div class="year">\
-                ${year}\
-            </div>\
-            <div class="weekday">\
-                ${weekday}\
-            </div>\
-        </div>\
-        <div class="ticket-status">\
-            <div class="delete">x</div>\
-            <div class="pnr-num">\
-                PNR ${pnr_num}\
-            </div>\
-            <div class="start-destination">\
-                ${source}  ${destination}\
-            </div>\
-            <div class="ticket-items">\
-                <div class="fetching-pnr">\
-        	           Fetching status \
-        	      </div>\
-                <ul class="ticket-item-list">\
-                    <!--li class="cnf"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li-->\
-                    <li class="clrfix"></li>\
-                </ul>\
-                <div class="train-name-block">\
-                    <div class="train-num">${train_num}</div> <div class="train-name">${train_name}</div>\
-					<div class="train-time">${train_time}</div>\
-					          <div class="chart-status chart-status-not-prepared"><span class="chart-status-text">Chart not prepared</span></div>\
-                </div>\
-                <div style="clear:both;"></div>\
-            </div>\
-        </div>\
-    </div>\
-	 ';  
+PNRStatus.ticketMarkup = function(pnr_num) {
+  markup = '<div class="status-item" id="' + pnr_num + '">\
+  <div class="fetching">\
+	     Fetching status for PNR '+ pnr_num +'\
+	</div>\
+  <div class="date-info">\
+      <div class="date">\
+          ${date} \
+      </div>\
+      <div class="year">\
+          ${year}\
+      </div>\
+      <div class="weekday">\
+          ${weekday}\
+      </div>\
+  </div>\
+  <div class="ticket-status">\
+      <div class="delete">x</div>\
+      <div class="pnr-num">\
+          PNR '+ pnr_num +'\
+      </div>\
+      <div class="start-destination">\
+          ${source}  ${destination}\
+      </div>\
+      <div class="ticket-items">\
+          <div class="fetching-pnr">\
+  	           Fetching status \
+  	      </div>\
+          <ul class="ticket-item-list">\
+              <!--li class="cnf"><div class="ticket-status-text">S1</div><div class="ticket-status-num">31</div></li-->\
+              <li class="clrfix"></li>\
+          </ul>\
+          <div class="train-name-block">\
+              <div class="train-num">${train_num}</div> <div class="train-name">${train_name}</div>\
+	<div class="train-time">${train_time}</div>\
+	        <div class="chart-status chart-status-not-prepared"><span class="chart-status-text">Chart not prepared</span></div>\
+          </div>\
+          <div style="clear:both;"></div>\
+      </div>\
+  </div>\
+  </div>';  
+
+  return $(markup);
+}
 	 
 /* 
  * Gets current date as markup
@@ -134,8 +136,8 @@ PNRStatus.updateTicketItem = function(pnr_num,data,update)
         var passenger = data.passenger[i];
         var parsedData = PNRStatus.parseStatus(data.passenger[i]);
         
-        var markup = '<li class="${css}"><div class="ticket-status-text">${status}</div><div class="ticket-status-num">${number}</div></li>';
-        var node   = $.tmpl(markup,{'css':parsedData['color'],'status':parsedData['state'],'number':parsedData['number']});
+        var markup = '<li class="' + parsedData['color'] + '"><div class="ticket-status-text">' + parsedData['state'] + '</div><div class="ticket-status-num">' + parsedData['number'] + '</div></li>';
+        var node   = $(markup);
         ticketNode.find('.ticket-item-list').append(node);
       }
       
@@ -220,7 +222,7 @@ PNRStatus.setDisplays = function()
 { 
 	
 	for (var i=0;i<PNRStatus.pnrnum.length;i++){
-	  var node = 	$.tmpl(PNRStatus.ticketMarkup,{'pnr_num':PNRStatus.pnrnum[i]});
+	  var node = 	PNRStatus.ticketMarkup(PNRStatus.pnrnum[i]);
 	  $('#status-items-block').append(node);
 	}
 	$('.ticket-status').hide();
@@ -333,7 +335,7 @@ PNRStatus.addPNR = function(ev)
 
 PNRStatus.addPNRToDisplay = function(num)
 {
-   var node = 	$.tmpl(PNRStatus.ticketMarkup,{'pnr_num':num});
+   var node = PNRStatus.ticketMarkup(num);
    $('#status-items-block').append(node);
    node.find('.ticket-status').hide();
  	 node.find('.date-info').hide();
