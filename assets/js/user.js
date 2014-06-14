@@ -80,6 +80,7 @@ PNRStatus.setTimedout = function(pnr_num)
 
 PNRStatus.callback = function(data)
 {
+  debugger;
   var return_obj = eval('(' + data + ')');
   if(return_obj.status == 'OK')
   {	
@@ -197,9 +198,9 @@ PNRStatus.sort = function(pnr_num){
 
 PNRStatus.getPNRStatus = function(pnrInteger, callback)
 {
-  var url = 'http://pnrapi.alagu.net/api/v1.0/pnr/' + pnrInteger;// + '?jsonp=pnrInteger';
+  var url = 'http://localhost:8080/api/v1.0/pnr/' + pnrInteger;// + '?jsonp=pnrInteger';
   var chrome_getJSON = function(url, callback) {
-        chrome.extension.sendRequest({action:'getJSON',url:url}, callback);
+        chrome.extension.sendRequest({action:'getJSON',url:url, pnr: pnrInteger}, callback);
   }
   if(!callback) callback = PNRStatus.callback;
   
