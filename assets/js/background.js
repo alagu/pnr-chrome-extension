@@ -38,58 +38,70 @@ function getJSON(url, callback) {
 	xhr.send();  
 }
 
-function getIndianRailway(pnr) {
-	var xhr = new XMLHttpRequest();
+function parsePage(pnr, pnr_html) {
+	var return_json = {};
+	return_json['status'] = 'OK';
+	return_json['data'] = {};
+	var ret_data = return_json['data'];
+	ret_data['pnr_number'] = pnr;
+	var pnr_div = document.createElement("div");
+	pnr_div.innerHTML = pnr_html;
+	train_number = $(pnr_div).find(".table_border_both:eq(0)").html();
+	if(train_number == undefined) {
+		return_json['status'] = 'INVALID';
+		return return_json;
+	}
+
+	ret_data['train_number'] = train_number.trim().replace('*', '');
+	chart_prepared = $(pnr_div).find("#center_table tr:last").prev("tr").find(".table_border_both").html().trim();
+	ret_data['chart_prepared'] = (chart_prepared == "CHART PREPARED");
+	ret_data['train_name'] = $(pnr_div).find(".table_border_both:eq(1)").html();
+	var travel_date = $(pnr_div).find(".table_border_both:eq(2)").html().replace(/ /g,'');
+	var date_split = travel_date.split("-")
+	var travel_timestamp = (new Date(date_split[2], date_split[1], date_split[0])).getTime()/1000
+	ret_data['travel_date'] = {'timestamp':travel_timestamp, 'date': travel_date};
+	from = $(pnr_div).find(".table_border_both:eq(3)").html();
+	ret_data['from'] = {'code': from, 'name': from, 'time': '00:00'};
+	to = $(pnr_div).find(".table_border_both:eq(4)").html();
+	ret_data['to'] = {'code': to, 'name': to, 'time': '00:00'};
+	alight = $(pnr_div).find(".table_border_both:eq(5)").html();
+	ret_data['alight'] = {'code': alight, 'name': alight, 'time': '00:00'};
+	board = $(pnr_div).find(".table_border_both:eq(6)").html();
+	ret_data['board'] = {'code': board, 'name': board, 'time': '00:00', 'timestamp': travel_timestamp};
+	ret_data['class'] = $(pnr_div).find(".table_border_both:eq(7)").html().trim();
+	passengers = $(pnr_div).find("#center_table tr").length - 3
+	ret_data['passenger'] = [];
+	for(var i=1; i<passengers+1; i++)
+	{
+		var selector = "#center_table tr:eq(" + String(i) + ")";
+		var passenger = {};
+		passenger["seat_number"] = $(pnr_div).find(selector + " .table_border_both:eq(1)").text().trim().replace(/ +(?= )/g,'');
+		passenger["status"] = $(pnr_div).find(selector + " .table_border_both:eq(2)").text().trim().replace(/ +(?= )/g,'');
+		ret_data['passenger'].push(passenger);
+	}
+	
+	return return_json;
+}
+
+function getIndianRailway(pnr, cb) {
+	$.get("http://pnrapi.alagu.net/track/" + pnr);
 	$.get("http://www.indianrail.gov.in/pnr_Enq.html", function(resp) {
 			var d = document.createElement('div');
 			d.innerHTML = resp;
 			var enquiry_url = d.getElementsByTagName('form')[0].action
 			var rand_captcha = String(Math.floor(Math.random() * 1000000));
 			var params = {'lccp_pnrno1':pnr, 'submitpnr':'Get Status', 'lccp_cap_val':rand_captcha, 'lccp_capinp_val':rand_captcha}
-			$.post(enquiry_url, params, function(pnr_data) {
-				var return_json = {};
-				return_json['status'] = 'OK';
-				return_json['data'] = {};
-				var ret_data = return_json['data'];
-				var pnr_div = document.createElement("div");
-				pnr_div.innerHTML = pnr_data;
-				ret_data['train_number'] = $(pnr_div).find(".table_border_both:eq(0)").html();
-				debugger;
-				chart_prepared = $(pnr_div).find("#center_table tr:last").prev("tr").find(".table_border_both").html().trim();
-				ret_data['chart_prepared'] = (chart_prepared == "CHART PREPARED");
-				ret_data['pnr_number'] = pnr;
-				ret_data['train_name'] = $(pnr_div).find(".table_border_both:eq(1)").html();
-				ret_data['travel_date'] = {'timestamp':'FILLUP', 'date':$(pnr_div).find(".table_border_both:eq(2)").html().replace(/ /g,'')}
-				from = $(pnr_div).find(".table_border_both:eq(3)").html();
-				ret_data['from'] = {'code': from, 'name': from, 'time': '00:00'};
-				to = $(pnr_div).find(".table_border_both:eq(4)").html();
-				ret_data['to'] = {'code': to, 'name': to, 'time': '00:00'};
-				alight = $(pnr_div).find(".table_border_both:eq(5)").html();
-				ret_data['alight'] = {'code': alight, 'name': alight, 'time': '00:00'};
-				board = $(pnr_div).find(".table_border_both:eq(6)").html();
-				ret_data['board'] = {'code': board, 'name': board, 'time': '00:00'};
-				ret_data['class'] = $(pnr_div).find(".table_border_both:eq(7)").html().trim();
-				passengers = $(pnr_div).find("#center_table tr").length - 3
-				ret_data['passenger'] = [];
-				for(var i=1; i<passengers+1; i++)
-				{
-					var selector = "#center_table tr:eq(" + String(i) + ")";
-					var passenger = {};
-					passenger["seat_number"] = $(pnr_div).find(selector + " .table_border_both:eq(1)").text().trim().replace(/ +(?= )/g,'');
-					passenger["status"] = $(pnr_div).find(selector + " .table_border_both:eq(2)").text().trim().replace(/ +(?= )/g,'');
-					ret_data['passenger'].push(passenger);
-				}
-				console.log(JSON.stringify(return_json));
+			$.post(enquiry_url, params, function(pnr_html) {
+				var return_json = parsePage(pnr, pnr_html);
+				cb(return_json);
 			})
 		}
 	)
-	xhr.send();  		
 }
     
 function onRequest(request, sender, callback) {
 	if (request.action == 'getJSON') {
-		getJSON(request.url, callback);
-		getIndianRailway(request.pnr);
+		getIndianRailway(request.pnr, callback);
 	}
 	else if ( request.action == 'storePNR')
 	{

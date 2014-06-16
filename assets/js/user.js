@@ -36,7 +36,6 @@ PNRStatus.ticketMarkup = function(pnr_num) {
           </ul>\
           <div class="train-name-block">\
               <div class="train-num">${train_num}</div> <div class="train-name">${train_name}</div>\
-	<div class="train-time">${train_time}</div>\
 	        <div class="chart-status chart-status-not-prepared"><span class="chart-status-text">Chart not prepared</span></div>\
           </div>\
           <div style="clear:both;"></div>\
@@ -80,8 +79,7 @@ PNRStatus.setTimedout = function(pnr_num)
 
 PNRStatus.callback = function(data)
 {
-  debugger;
-  var return_obj = eval('(' + data + ')');
+  var return_obj = data;
   if(return_obj.status == 'OK')
   {	
     PNRStatus.updateTicketItem(return_obj.data.pnr_number, return_obj.data);
@@ -104,7 +102,7 @@ PNRStatus.setInvalid = function(pnr_num) {
 						<div>Problem fetching data for PNR ${pnr_num}</div> \
 						<div class="delete">Remove?</div>\
 					  </div><div style="clear:both;"></div>';
-		var node   = $.tmpl(markup, {'pnr_num':pnr_num});
+		var node   = markup.replace('${pnr_num}', pnr_num);
 		ticketNode.html('');
 		ticketNode.append(node);
 		$('.invalid .delete').click(PNRStatus.deletePNRCB);
@@ -124,7 +122,6 @@ PNRStatus.updateTicketItem = function(pnr_num,data,update)
     ticketNode.find('.ticket-status .start-destination').html(data.board.name + ' - ' + data.alight.name);
     ticketNode.find('.train-name-block  .train-num').html(data.train_number);
     ticketNode.find('.train-name-block .train-name').html(data.train_name);
-    ticketNode.find('.train-name-block .train-time').html("Departs at " + data.board.time);
     ticketNode.find('.fetching').hide();
     ticketNode.find('.ticket-status').show();
     ticketNode.find('.date-info').show();
@@ -150,7 +147,7 @@ PNRStatus.updateTicketItem = function(pnr_num,data,update)
       }
       
       delete data.passenger;
-      var json = $.toJSON(data);
+      var json = JSON.stringify(data);
       localStorage.setItem(pnr_num,json);
     }
     
