@@ -112,6 +112,12 @@ PNRStatus.setInvalid = function(pnr_num) {
 PNRStatus.updateTicketItem = function(pnr_num,data,update)
 {
   if(data) {
+    var two_days = 172800;
+    var current_time = (new Date()).getTime()/1000;
+    if ((current_time - data.board.timestamp) > two_days) {
+      PNRStatus.deletePNR(pnr_num);
+      return;
+    }
     
     var ticketNode = $('#' + pnr_num);
     var date = PNRStatus.getDate(data.board.timestamp);
