@@ -58,7 +58,7 @@ function parsePage(pnr, pnr_html) {
 	ret_data['train_name'] = $(pnr_div).find(".table_border_both:eq(1)").html();
 	var travel_date = $(pnr_div).find(".table_border_both:eq(2)").html().replace(/ /g,'');
 	var date_split = travel_date.split("-")
-	var travel_timestamp = (new Date(date_split[2], date_split[1], date_split[0])).getTime()/1000
+	var travel_timestamp = (new Date(date_split[2], (Number(date_split[1]) - 1), date_split[0])).getTime()/1000
 	ret_data['travel_date'] = {'timestamp':travel_timestamp, 'date': travel_date};
 	from = $(pnr_div).find(".table_border_both:eq(3)").html();
 	ret_data['from'] = {'code': from, 'name': from, 'time': '00:00'};
