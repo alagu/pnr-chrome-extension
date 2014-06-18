@@ -1,3 +1,14 @@
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-24995053-1']);
+_gaq.push(['_trackPageview', "popup.html#" + chrome.runtime.getManifest()['version']]);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
+
 PNRStatus = {};
 PNRStatus.sortInProgress = false;
 (function(){
@@ -100,7 +111,7 @@ PNRStatus.setInvalid = function(pnr_num) {
 	{
 		var markup = '<div class="invalid"> \
 						<div>Problem fetching data for PNR ${pnr_num}</div> \
-						<div class="delete">Remove?</div>\
+						<div class="delete pnr-invalid">Remove?</div>\
 					  </div><div style="clear:both;"></div>';
 		var node   = markup.replace('${pnr_num}', pnr_num);
 		ticketNode.html('');
@@ -115,6 +126,7 @@ PNRStatus.updateTicketItem = function(pnr_num,data,update)
     var two_days = 172800;
     var current_time = (new Date()).getTime()/1000;
     if ((current_time - data.board.timestamp) > two_days) {
+      PNRStatus.trackEvent("delete_old_pnr_auto");
       PNRStatus.deletePNR(pnr_num);
       return;
     }
@@ -250,6 +262,8 @@ PNRStatus.deletePNRCB = function(ev)
 {
    var pnrnum = this.parentNode.parentNode.id;
    PNRStatus.deletePNR(pnrnum);
+   event_name = "delete_pnr_" + $(this).attr('class').replace(".","").replace(" ","_") 
+   PNRStatus.trackEvent(event_name);
 }
 
 PNRStatus.deletePNR = function(pnrnum){
@@ -258,8 +272,6 @@ PNRStatus.deletePNR = function(pnrnum){
  {
    PNRStatus.deleteFromLocalStorage(pnrnum);
  }
-
- PNRStatus.trackEvent('deletePNR');
 }
 
 /* Add a ticket to history of tickets */
@@ -331,9 +343,9 @@ PNRStatus.addPNR = function(ev)
  }
  
  $('#add-pnr').val('');
+ PNRStatus.trackEvent("add_pnr_popup")
  
  localStorage['pnrnum'] = PNRStatus.pnrnum.join(',');
- PNRStatus.trackEvent('addPNR_button');
 }
 
 
@@ -488,8 +500,11 @@ PNRStatus.parseStatus = function(passenger)
     
 }
 
-PNRStatus.trackEvent = function(event)
+PNRStatus.trackEvent = function(event, label, value)
 {
-  chrome.extension.sendRequest({action:'track',event:event});
+  label = typeof label !== 'undefined' ? label : 'version';
+  value = typeof value !== 'undefined' ? value : chrome.runtime.getManifest()['version'];
+  _gaq.push(['_trackEvent', event, label, value]);
 }
+
 })();

@@ -1,6 +1,6 @@
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-24995053-1']);
-_gaq.push(['_trackPageview']);
+_gaq.push(['_trackPageview', "background.html#" + chrome.runtime.getManifest()['version']]);
 
 (function() {
 	var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -20,9 +20,11 @@ function getStoredPNR()
 }
 
 
-function trackEvent(event)
+function trackEvent(event, label, value)
 {
-	_gaq.push(['_trackEvent', event, 'event']);
+	label = typeof label !== 'undefined' ? label : 'version';
+	value = typeof value !== 'undefined' ? value : chrome.runtime.getManifest()['version'];
+	_gaq.push(['_trackEvent', event, label, value]);
 }
 
 function getJSON(url, callback) {
@@ -84,7 +86,7 @@ function parsePage(pnr, pnr_html) {
 }
 
 function getIndianRailway(pnr, cb) {
-	$.get("http://pnrapi.alagu.net/track/" + pnr);
+	$.get("http://pnrapi.alagu.net/track/pnr/" + pnr);
 	$.get("http://www.indianrail.gov.in/pnr_Enq.html", function(resp) {
 			var d = document.createElement('div');
 			d.innerHTML = resp;
@@ -114,6 +116,8 @@ function onRequest(request, sender, callback) {
 			pnrnum.push(num);
 		}
 
+		trackEvent(request.event);
+
 		localStorage['pnrnum'] = pnrnum.join(',');
        
 		callback(num);
@@ -122,10 +126,10 @@ function onRequest(request, sender, callback) {
 	{
 		callback(getStoredPNR());
 	}
-	else if (request.action == 'track')
-	{
-		_gaq.push(['_trackEvent', request.event, 'event']);
-	}
+  else if (request.action == 'track')
+  {
+  	trackEvent(request.event)
+  }
 }
 chrome.extension.onRequest.addListener(onRequest);
 
@@ -203,7 +207,6 @@ if (window.webkitNotifications) {
 		);
         
 		notification.show();
-		trackEvent('showpopup');
 
 		setTimeout(function() {
 			notification.cancel();

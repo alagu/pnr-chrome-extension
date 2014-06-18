@@ -31,13 +31,14 @@ var applyAddPNRButtons = function(node)
 var storePNRResponse = function(pnr_number)
 {
     var k = $('<div class="pnr_message" style="display:none;">PNR Number <strong>' + pnr_number  +'</strong> was added to your PNR Watchlist (Click <img src="http://pnrapi.appspot.com/static/pnr.png"> icon to know the status).</div>');
-    k.insertBefore('#maincontentbody');
+    k.insertBefore('.rf-p-b:eq(0)');
     $('.pnr_message').css('background', '#EFFEB9 url(http://pnrapi.appspot.com/static/green_check.png) no-repeat 10px 2px');
     $('.pnr_message').css('border', '1px solid #97C700');
-    $('.pnr_message').css('width', '80%');
+    $('.pnr_message').css('width', '61%');
     $('.pnr_message').css('font-size', '15px');
     $('.pnr_message').css('margin', '10px auto');
-    $('.pnr_message').css('padding', '4px 2px 5px 2px');
+    $('.pnr_message').css('padding', '4px 2px 5px 40px');
+    $('.pnr_message').css('color', '#000');
     $('.pnr_message img').css('vertical-align', 'middle');
 
     if(k) { k.show('slow');}
@@ -60,21 +61,24 @@ var bulkAddClick = function(e)
  }
 }
 
-var addPNR = function(pnrNumber, source)
+var addPNR = function(pnrNumber, event_name)
 {
 	if(Math.floor(pnrNumber/1000000000) > 0)
-    {
-     chrome.extension.sendRequest({action:'storePNR','pnr_num_store' : pnrNumber}, storePNRResponse);
-     chrome.extension.sendRequest({action:'track',event:'addPNR_IRCTC'});
-    }
+  {
+    chrome.extension.sendRequest({
+      'action' : 'storePNR',
+      'pnr_num_store' : pnrNumber,
+      'event': event_name,
+    }, storePNRResponse);
+  }
 }
 
 var ticketConfirmAddPNR = function(ev)
 {
 	var pnr_number = this.parentNode.parentNode.id;
-    $(this.parentNode.parentNode).hide();
-    addPNR(pnr_number, 'addPNR_IRCTC');
-    return false;
+  $(this.parentNode.parentNode).hide();
+  addPNR(pnr_number, 'add_pnr_bank_response');
+  return false;
 }
 
 var printTicketPopup = function()
@@ -89,34 +93,37 @@ var printTicketPopup = function()
 var addToBankResponsePage = function()
 {
 	
-    var tdNodes = ($('td.borderTB'));
+    var tdNodes = ($('.rf-p-b:eq(0)'));
 	    if(tdNodes.length){
 		var pnrNode = tdNodes[0];
 		if(pnrNode) {
-	    	var content = $(pnrNode).html();
-	    	var split = (content.match(/(\d+)/));
-			if(split.length) {
-	    		var pnr_number = (split[0]);
-			 	var k = $('<div class="pnr_message" style="display:none;" id="'+ pnr_number +'">You just booked a ticket! Add it to your PNR watchlist (<img src="http://pnrapi.appspot.com/static/pnr.png">) to track the status.<div><button class="pnr_message_button" id="pnr_add_button">Add to Watchlist</button></div></div>');
-			    k.insertBefore('#maincontentbody');
-			    $('.pnr_message').css('background', '#E3E9FF url(http://pnrapi.appspot.com/static/blue_info.png) no-repeat 10px 2px');
-			    $('.pnr_message').css('border', '1px solid #68E');
-			    $('.pnr_message').css('width', '80%');
-			    $('.pnr_message').css('font-size', '15px');
-			    $('.pnr_message').css('margin', '10px auto');
-			    $('.pnr_message').css('padding', '4px 2px 5px 2px');
+	    	var pnr_number = $(pnrNode).find('#pnrNo').html()
+			if(pnr_number) {
+  			 	var k = $('<div class="pnr_message" style="display:none;" id="'+ pnr_number +'">Great, you just booked a ticket! Add it to your PNR watchlist (<img src="http://pnrapi.appspot.com/static/pnr.png">) to track the status in one click.<div><button class="pnr_message_button" id="pnr_add_button">Add to Watchlist</button></div></div>');
+			    k.insertBefore('.rf-p-b:eq(0)');
+          $('.pnr_message').css({
+            "border" : "1px solid rgb(102, 136, 238)",
+            "width" : "69%",
+            "font-size" : "15px",
+            "margin" : "10px auto",
+            "padding" : "10px 2px 5px 50px",
+            "background" : "url(http://pnrapi.appspot.com/static/blue_info.png) 10px 13px no-repeat rgb(227, 233, 255)",
+            "color" : "#000",
+            "font-size" : "17px",
+            "text-align" : "center"});
+
 			    $('.pnr_message img').css('vertical-align', 'middle');
 
-
-			    $('.pnr_message_button').css('font-size','120%');
-			    $('.pnr_message_button').css('margin-right','20px');
-
-			    $('.pnr_message_button').css('padding','5px');
-			    $('.pnr_message_button').css('color','#fff');
-			    $('.pnr_message_button').css('border','1px solid #000');
-			    $('.pnr_message_button').css('background-color','#68E');
-			    $('.pnr_message_button').css('-webkit-border-radius','4px');
-			    $('#pnr_add_button').click(ticketConfirmAddPNR);
+			    $('.pnr_message_button').css({
+            'font-size':'120%',
+			      'margin-right' : '20px',
+			      'padding' : '5px',
+			      'color' : '#fff',
+			      'border' : '1px solid #000',
+			      'background-color' : '#68E',
+			      '-webkit-border-radius' : '4px'})
+			    
+          $('#pnr_add_button').click(ticketConfirmAddPNR);
 
 			    if(k) { k.show('slow');}
 			}
@@ -159,7 +166,7 @@ var addToPNRButton = function()
 
 
 var search_map = {'repassword':addToPNRButton,
-				  'bankresponse':addToBankResponsePage,
+				  'BankResponse':addToBankResponsePage,
 				  'ticketconfirm.do':addToBankResponsePage};
 
 var applyPageChanges = function(storedPNR)
