@@ -195,11 +195,6 @@ if (window.webkitNotifications) {
 			var passengerStatus = data['data']['passenger'][passenger]['status']; 
 			status += passengerStatus + ' ';
 		}
-        
-		if (data['data']['from']['time'] != '') {
-			status += '. Departs at ' + data['data']['board']['time'];
-		}
-        
 		var notification = window.webkitNotifications.createNotification(
 			'icon.png',  
 			Background.getDateString(data['data']['board']['timestamp']) + ': ' + data['data']['board']['name'] + ' to ' + data['data']['alight']['name'], // The title.
@@ -207,6 +202,8 @@ if (window.webkitNotifications) {
 		);
         
 		notification.show();
+
+		trackEvent("show_notification");
 
 		setTimeout(function() {
 			notification.cancel();
