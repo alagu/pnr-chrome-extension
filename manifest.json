@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "PNR Status Watchlist",
   "short_name": "PNR Status Watchlist",
-  "version": "0.10.4",
+  "version": "0.10.5",
   "description": "PNR Status watchlist for your tickets",
   "background": {
     "page" : "background.html"
@@ -22,7 +22,7 @@
   },
    "content_scripts": [
    {
-     "matches": ["https://www.irctc.co.in/*"],
+     "matches": ["https://*.irctc.co.in/*"],
      "js" : ["assets/js/jquery.min.js","assets/js/contentscript.js"]
    }
   ],
