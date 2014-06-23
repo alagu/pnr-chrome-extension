@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "PNR Status Watchlist",
   "short_name": "PNR Status Watchlist",
-  "version": "0.10.6",
+  "version": "0.10.7",
   "description": "PNR Status watchlist for your tickets",
   "background": {
     "page" : "background.html"
@@ -13,7 +13,7 @@
     "notifications"
   ],
    "icons": {
-     "48": "icon.png"
+     "48": "logo-48x48.png"
    },
    "browser_action": {
     "default_icon": "icon.png",
