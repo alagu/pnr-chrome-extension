@@ -211,18 +211,18 @@ PNRStatus.sort = function(pnr_num){
   }
 }
 
-PNRStatus.getPNRStatus = function(pnrInteger, callback)
+PNRStatus.getPNRStatus = function(pnr_num, callback)
 {
-  var url = 'http://localhost:8080/api/v1.0/pnr/' + pnrInteger;// + '?jsonp=pnrInteger';
-  var chrome_getJSON = function(url, callback) {
-        chrome.extension.sendRequest({action:'getJSON',url:url, pnr: pnrInteger}, callback);
+  var proxy_getPNRFromIndianRailway = function(pnr_num, callback) {
+    chrome.extension.sendRequest({action:'getPNRFromIndianRailway', pnr: pnr_num}, callback);
   }
+
   if(!callback) callback = PNRStatus.callback;
   
-  if(typeof getJSON != 'undefined') {
-      getJSON(url, callback);
+  if(typeof getPNRFromIndianRailway != 'undefined') {
+      getPNRFromIndianRailway(pnr_num, callback);
   } else {
-      chrome_getJSON(url, callback);
+      proxy_getPNRFromIndianRailway(pnr_num, callback);
   }
 }
 

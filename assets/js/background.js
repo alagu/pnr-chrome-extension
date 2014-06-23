@@ -27,19 +27,6 @@ function trackEvent(event, label, value)
 	_gaq.push(['_trackEvent', event, label, value]);
 }
 
-function getJSON(url, callback) {
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", url, true);
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4) {
-			var resp = xhr.responseText;
-			console.log(resp);
-			callback(resp);
-		}
-	}
-	xhr.send();  
-}
-
 function parsePage(pnr, pnr_html) {
 	var return_json = {};
 	return_json['status'] = 'OK';
@@ -85,7 +72,7 @@ function parsePage(pnr, pnr_html) {
 	return return_json;
 }
 
-function getIndianRailway(pnr, cb) {
+function getPNRFromIndianRailway(pnr, cb) {
 	$.get("http://pnrapi.alagu.net/track/pnr/" + pnr);
 	$.get("http://www.indianrail.gov.in/pnr_Enq.html", function(resp) {
 			var d = document.createElement('div');
@@ -102,8 +89,8 @@ function getIndianRailway(pnr, cb) {
 }
     
 function onRequest(request, sender, callback) {
-	if (request.action == 'getJSON') {
-		getIndianRailway(request.pnr, callback);
+	if (request.action == 'getPNRFromIndianRailway') {
+		getPNRFromIndianRailway(request.pnr, callback);
 	}
 	else if ( request.action == 'storePNR')
 	{
@@ -148,7 +135,7 @@ install_notice();
   
 var Background = {};
 
-if (window.webkitNotifications) {
+if (Notification && Notification.permission == 'granted') {
 	Background.timeInDays = function(days_diff)
 	{
 		return (days_diff)*86400*1000;
@@ -184,6 +171,18 @@ if (window.webkitNotifications) {
 			return timeTuple[0] + " " + timeTuple[1];
 		}
 	}
+
+	Background.notificationClicked = function(notID) {
+		trackEvent("notification_clicked");
+		chrome.windows.create({
+                type: 'popup',
+                focused: true,
+                url: chrome.runtime.getURL("/popup.html"),
+                width: 600,
+                height: 400
+            });
+		chrome.notifications.clear(notID, function(d){});
+	}
       
 	Background.showPopup = function(data) {
 		var status = '';
@@ -195,18 +194,20 @@ if (window.webkitNotifications) {
 			var passengerStatus = data['data']['passenger'][passenger]['status']; 
 			status += passengerStatus + ' ';
 		}
-		var notification = window.webkitNotifications.createNotification(
-			'icon.png',  
-			Background.getDateString(data['data']['board']['timestamp']) + ': ' + data['data']['board']['name'] + ' to ' + data['data']['alight']['name'], // The title.
-			'Status - ' + status 
-		);
-        
-		notification.show();
+
+		var options = {
+			type : "basic",
+			title: Background.getDateString(data['data']['board']['timestamp']) + ': ' + data['data']['board']['name'] + ' to ' + data['data']['alight']['name'],
+			message: 'Status - ' + status,
+			iconUrl: chrome.runtime.getURL("/logo-64x64.png")
+		};
+
+    chrome.notifications.create(data['data']['pnr_number'], options, function(d) { console.log(d); })
 
 		trackEvent("show_notification");
 
 		setTimeout(function() {
-			notification.cancel();
+			chrome.notifications.clear(data['data']['pnr_number'], function(d){ console.log("Clearing " + d);});
 		}, 600000);
 	}
 	  
@@ -228,10 +229,10 @@ if (window.webkitNotifications) {
 	/* Gets the cached PNR status, or returns null */
 	Background.getCachedPNRStatus = function(pnr) {
 		if (localStorage.getItem(Background.cacheKey(pnr))) {
-			data = $.parseJSON(localStorage.getItem(Background.cacheKey(pnr)));
+			data = JSON.parse(localStorage.getItem(Background.cacheKey(pnr)));
 			return data;
 		} else {
-			PNRStatus.getPNRStatus(pnr,function(pnr_data){ Background.storeAndMonitorPNR(pnr, $.parseJSON(pnr_data));}) 
+			PNRStatus.getPNRStatus(pnr,function(pnr_data){Background.storeAndMonitorPNR(pnr, pnr_data);}) 
 			return null;
 		}
 	}
@@ -249,14 +250,20 @@ if (window.webkitNotifications) {
 		var travelTimestamp  = pnr_data['data']['board']['timestamp'] * 1000;
 		var difference       = travelTimestamp - currentTimestamp;
 		var nextPopupTime    = 0;
-		if (difference < 0 )
+		if (difference <  0)
 		{
-			// Old ticket
-			nextPopupTime = -1;
+			if (difference < (-1) * Background.timeInDays(2)) 
+			{
+				nextPopupTime = -1;				
+			}
+			else
+			{
+				nextPopupTime = currentTimestamp + Background.timeInMins(15);
+			}
 		}
 		else if (difference < Background.timeInHours(2))
 		{
-			nextPopupTime = currentTimestamp + Background.timeInMins(15);
+			nextPopupTime = currentTimestamp + Background.timeInMins(30);
 		}
 		else if(difference < Background.timeInHours(6)) 
 		{
@@ -318,7 +325,7 @@ if (window.webkitNotifications) {
 			if ((new Date()).getTime() > nextPopupTime && nextPopupTime != -1) {
 				PNRStatus.getPNRStatus(cached_data['data']['pnr_number'],
 				function(pnr_data){ 
-					Background.refreshAndShow(cached_data['data']['pnr_number'],$.parseJSON(pnr_data));});
+					Background.refreshAndShow(cached_data['data']['pnr_number'], pnr_data);});
 				}
 			} 
 		}
@@ -334,11 +341,12 @@ if (window.webkitNotifications) {
 		Background.forceRefetchAll = function() {
 			PNRStatus.populatePNR();
 			for (var i=0; i< PNRStatus.pnrnum.length; i++) {
-				PNRStatus.getPNRStatus(PNRStatus.pnrnum[i],function(pnr_data){ Background.storeAndMonitorPNR(PNRStatus.pnrnum[i], $.parseJSON(pnr_data));}) 
+				PNRStatus.getPNRStatus(PNRStatus.pnrnum[i],function(pnr_data){ Background.storeAndMonitorPNR(PNRStatus.pnrnum[i], JSON.parse(pnr_data));}) 
 			}
 		}
       
 		setInterval(Background.monitorAllTickets, 120000);
 		setInterval(Background.forceRefetchAll, 6*60*60*1000);
 		Background.monitorAllTickets();
+    chrome.notifications.onClicked.addListener(Background.notificationClicked);
 	}
