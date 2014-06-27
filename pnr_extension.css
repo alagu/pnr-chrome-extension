@@ -422,3 +422,15 @@ body
 h1 {
 	font-family: 'Roboto', sans-serif;
 }
+
+#notice {
+	display: none;
+	text-align: center;
+	font-size: 12px;
+	background-color: #FFB800;
+	width: 80%;
+	margin: 0 auto;
+	padding: 2px;
+	border-radius: 6px;
+	border: 1px solid #F71F1F;
+}
