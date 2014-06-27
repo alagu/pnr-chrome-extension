@@ -5,6 +5,7 @@
   src: local('Copse'), url(/assets/fonts/Copse.woff) format('woff');
 }
 
+
 body {
   font-family: 'Copse', arial, serif;
 }

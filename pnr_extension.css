@@ -12,6 +12,14 @@ Red shadow - #CC6E76
 
 */
 
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto Regular'), local('Roboto-Regular'), url(/assets/fonts/Roboto.woff) format('woff');
+}
+
+
 html
 {
 	max-height:500px;
@@ -146,7 +154,7 @@ body
 
 .title
 {
-	font-size:21px;
+	font-size:20px;
 }
 
 .ticket-status .ticket-items ul.ticket-item-list
@@ -396,4 +404,21 @@ body
 	width:80px;
 	margin:0 auto;
 	margin-top:10px;
+}
+
+.help {
+	float:right;
+}
+
+.help a {
+	font-size: 13px;
+	text-decoration: none;
+	margin-right: 10px;
+	margin-top: 10px;
+	color: #000;
+	font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+	font-family: 'Roboto', sans-serif;
 }
