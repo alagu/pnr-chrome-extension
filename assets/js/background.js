@@ -350,3 +350,12 @@ if (Notification && Notification.permission == 'granted') {
 		Background.monitorAllTickets();
     chrome.notifications.onClicked.addListener(Background.notificationClicked);
 	}
+
+chrome.webRequest.onBeforeSendHeaders.addListener(
+    function(details) {
+      details.requestHeaders.push({name: 'Referer', value: 'http://www.indianrail.gov.in/'})
+      details.requestHeaders.push({name: 'Origin', value: 'http://www.indianrail.gov.in/'})
+      return {requestHeaders: details.requestHeaders};
+    },
+    {urls: ["<all_urls>"]},
+    ["blocking", "requestHeaders"]);

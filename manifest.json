@@ -10,7 +10,9 @@
   "permissions": [
     "http://pnrapi.alagu.net/",
     "http://www.indianrail.gov.in/",
-    "notifications"
+    "notifications",
+    "webRequest",
+    "webRequestBlocking"
   ],
    "icons": {
      "48": "logo-48x48.png"
