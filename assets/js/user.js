@@ -106,6 +106,7 @@ PNRStatus.callback = function(data)
 }
 
 PNRStatus.setInvalid = function(pnr_num) {
+  PNRStatus.trackEvent("show_invalid_pnr");
 	var ticketNode = $('#' + pnr_num) 
 	if (ticketNode)
 	{

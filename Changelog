@@ -1,5 +1,11 @@
 Changelog
 ---------
+2014-06-29 v0.10.11
+  * Track invalid tickets count
+
+2014-06-27 v0.10.10
+  * Add a webRequest blocking, intercept and add Referer headers
+
 2014-06-16 v0.10
   * Long pending update, now this app doesn't hit my servers. It hits Indian Railways website directly. This makes it easy for me to maintain as I don't have to pay money for running these servers. 
   * Few bug fixes.
