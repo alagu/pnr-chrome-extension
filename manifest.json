@@ -3,7 +3,7 @@
   "name": "PNR Status Watchlist",
   "short_name": "PNR Status Watchlist",
   "version": "0.10.12",
-  "description": "Tired of checking for your Waiting List(WL) and RAC status? Frustrated by opening Indian Railways website everytime? PNR Chrome Extension lets you track all your Train tickets in SINGLE CLICK.",
+  "description": "Tired of tracking Waiting List(WL) and RAC status? PNR Chrome Extension lets you track all your Train tickets in SINGLE CLICK.",
   "background": {
     "page" : "background.html"
     },
