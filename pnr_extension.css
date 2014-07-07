@@ -434,3 +434,36 @@ h1 {
 	border-radius: 6px;
 	border: 1px solid #F71F1F;
 }
+
+.refer-friends {
+	float:right;
+	margin-top: -1px;
+	margin-right: 110px;
+}
+
+.refer-friends span {
+	display: block;
+	font-size: 10px;
+	margin-left: 23px; 
+}
+
+#tell-friends {
+	color: rgb(255, 255, 255);
+	font-family: 'Helvetica Neue', Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif;
+	font-size: 12px;
+	font-weight:bold;
+	text-decoration: none solid rgb(255, 255, 255);
+	background-color: #4e69a2;
+	border-color: #435a8b #3c5488 #334c83;
+	padding: 0px 16px;
+	line-height: 34px;
+	display: inline-block;
+	border: 1px solid;
+	-webkit-border-radius: 30px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.0470588) 0px 1px 1px 0px;
+	-webkit-font-smoothing: antialiased;
+	-webkit-writing-mode: horizontal-tb;
+	align-items: flex-start;
+	-webkit-box-sizing: content-box;
+	text-shadow: rgba(0, 0, 0, 0.2) 0px -1px 0px;
+}

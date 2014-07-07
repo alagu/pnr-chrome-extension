@@ -227,9 +227,26 @@ PNRStatus.getPNRStatus = function(pnr_num, callback)
   }
 }
 
+PNRStatus.tellFriends = function(e) {
+  PNRStatus.trackEvent('tell_friends');
+  chrome.windows.create({
+    type: 'popup',
+    focused: true,
+    url: $(this).attr('href'),
+    width: 600,
+    height: 400
+  });
+  return false;
+}
+
+PNRStatus.bindEvents = function() {
+  $('#add-button').click(PNRStatus.addPNR); //Add click handler for pnr status
+  $('#tell-friends').click(PNRStatus.tellFriends);
+}
+
 /* Popup intializer */
 PNRStatus.init = function(){
-  $('#add-button').click(PNRStatus.addPNR); //Add click handler for pnr status
+  PNRStatus.bindEvents();
   PNRStatus.populatePNR(); //Set all the pnr numbers in localStorage to PNRStatus object
   PNRStatus.setDisplays();
   PNRStatus.fetchAll();
