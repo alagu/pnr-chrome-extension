@@ -74,18 +74,13 @@ function parsePage(pnr, pnr_html) {
 
 function getPNRFromIndianRailway(pnr, cb) {
 	$.get("http://pnrapi.alagu.net/track/pnr/" + pnr);
-	$.get("http://www.indianrail.gov.in/pnr_Enq.html", function(resp) {
-			var d = document.createElement('div');
-			d.innerHTML = resp;
-			var enquiry_url = d.getElementsByTagName('form')[0].action
-			var rand_captcha = String(Math.floor(Math.random() * 1000000));
-			var params = {'lccp_pnrno1':pnr, 'submitpnr':'Get Status', 'lccp_cap_val':rand_captcha, 'lccp_capinp_val':rand_captcha}
-			$.post(enquiry_url, params, function(pnr_html) {
-				var return_json = parsePage(pnr, pnr_html);
-				cb(return_json);
-			})
-		}
-	)
+	var enquiry_url = "http://www.indianrail.gov.in/cgi_bin/inet_pnstat_cgi_10521.cgi";
+	var rand_captcha = String(Math.floor(Math.random() * 1000000));
+	var params = {'lccp_pnrno1':pnr, 'submitpnr':'Get Status', 'lccp_cap_val':rand_captcha, 'lccp_capinp_val':rand_captcha}
+	$.post(enquiry_url, params, function(pnr_html) {
+		var return_json = parsePage(pnr, pnr_html);
+		cb(return_json);
+	})
 }
     
 function onRequest(request, sender, callback) {

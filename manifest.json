@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "PNR Status Watchlist",
   "short_name": "PNR Status Watchlist",
-  "version": "0.10.12",
+  "version": "0.10.13",
   "description": "Tired of tracking Waiting List(WL) and RAC status? PNR Chrome Extension lets you track all your Train tickets in SINGLE CLICK.",
   "background": {
     "page" : "background.html"
